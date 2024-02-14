@@ -4,6 +4,9 @@ import { AppService } from './app.service';
 import { PromotionsModule } from './promotions/promotions.module';
 import { Promotion } from './promotions/entities/promotion.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { EventModule } from './event/event.module';
+import { PackageModule } from './package/package.module';
+import { TicketModule } from './ticket/ticket.module';
 
 @Module({
   imports: [
@@ -15,7 +18,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       username: 'root',
       password: '',
       database: 'waterpark',
-      entities: [Promotion],
+      entities: [Promotion, EventModule, PackageModule, TicketModule],
       synchronize: true,
     }),
   ],
