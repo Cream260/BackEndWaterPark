@@ -1,15 +1,20 @@
 import {IsNotEmpty, MinLength, IsNumber, Min} from 'class-validator'
-export class CreateEventDto {
-  
+export class CreateTicketDto {
+
   @IsNotEmpty()
   @MinLength(5)
   name: string;
 
   @IsNotEmpty()
-  detail:string;
+  @MinLength(5)
+  detail: string;
 
   @IsNotEmpty()
   @IsNumber()
   @Min(0)
-  price:number;
+  price: number;
+
+  @IsNotEmpty()
+  @MinLength(1)
+  type: string;
 }

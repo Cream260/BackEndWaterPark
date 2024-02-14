@@ -1,6 +1,5 @@
 import {IsNotEmpty, MinLength, IsNumber, Min} from 'class-validator'
-export class CreateEventDto {
-  
+export class CreatePackageDto {
   @IsNotEmpty()
   @MinLength(5)
   name: string;
