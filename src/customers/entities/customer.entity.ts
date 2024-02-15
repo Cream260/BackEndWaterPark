@@ -15,7 +15,7 @@ export class Customer {
   @Column({ length: '50', name: 'cus_name' })
   name: string;
 
-  @Column({ length: '50', name: 'cus_email' })
+  @Column({ length: '100', name: 'cus_email', unique: true })
   email: string;
 
   @Column({ unique: true, name: 'cus_tel' })

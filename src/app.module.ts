@@ -12,6 +12,8 @@ import { EventModule } from './event/event.module';
 import { PackageModule } from './package/package.module';
 import { TicketModule } from './ticket/ticket.module';
 import { CustomersModule } from './customers/customers.module';
+import { OrdersModule } from './orders/orders.module';
+import { Order } from './orders/entities/order.entity';
 
 @Module({
   imports: [
@@ -20,6 +22,7 @@ import { CustomersModule } from './customers/customers.module';
     PackageModule,
     TicketModule,
     CustomersModule,
+    OrdersModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -27,7 +30,7 @@ import { CustomersModule } from './customers/customers.module';
       username: 'root',
       password: '',
       database: 'waterpark',
-      entities: [Promotion, Event, Package, Ticket, Customer],
+      entities: [Promotion, Event, Package, Ticket, Customer, Order],
       synchronize: true,
     }),
   ],
