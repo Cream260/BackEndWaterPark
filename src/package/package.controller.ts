@@ -25,11 +25,6 @@ export class PackageController {
     return this.packageService.findAll();
   }
 
-  @Get('reset/')
-  reset() {
-    return this.packageService.reset();
-  }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.packageService.findOne(+id);

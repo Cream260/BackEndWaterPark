@@ -25,11 +25,6 @@ export class TicketController {
     return this.ticketService.findAll();
   }
 
-  @Get('reset/')
-  reset() {
-    return this.ticketService.reset();
-  }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.ticketService.findOne(+id);

@@ -26,11 +26,6 @@ export class EventController {
     return this.eventService.findAll();
   }
 
-  @Get('reset/')
-  reset() {
-    return this.eventService.reset();
-  }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.eventService.findOne(+id);
