@@ -8,18 +8,18 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Package {
-  @PrimaryGeneratedColumn({ name: 'package_id' })
+export class Customer {
+  @PrimaryGeneratedColumn({ name: 'cus_id' })
   id: number;
 
-  @Column({ length: '50', name: 'package_name' })
+  @Column({ length: '50', name: 'cus_name' })
   name: string;
 
-  @Column({ length: '100', name: 'package_detail' })
-  detail: string;
+  @Column({ length: '50', name: 'cus_email' })
+  email: string;
 
-  @Column({ type: 'float', name: 'package_price' })
-  price: number;
+  @Column({ unique: true, name: 'cus_tel' })
+  tel: string;
 
   @CreateDateColumn()
   createdDate: Date;
