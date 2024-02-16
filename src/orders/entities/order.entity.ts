@@ -3,9 +3,12 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Receipt } from '../../receipts/entities/receipt.entity';
+import { Ticket } from '../../ticket/entities/ticket.entity';
 
 @Entity()
 export class Order {
@@ -38,4 +41,10 @@ export class Order {
 
   @DeleteDateColumn()
   deletedDate: Date;
+
+  @ManyToOne(() => Receipt, (receipt) => receipt.order)
+  receipt: Receipt;
+
+  @ManyToOne(() => Ticket, (ticket) => ticket.order)
+  ticket: Ticket;
 }

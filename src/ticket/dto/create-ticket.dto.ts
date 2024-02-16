@@ -1,11 +1,11 @@
-import { IsNotEmpty, MinLength, IsNumber, Min } from 'class-validator';
+import { IsNotEmpty, IsNumber, Length, Min } from 'class-validator';
 export class CreateTicketDto {
   @IsNotEmpty()
-  @MinLength(5)
+  @Length(3, 50)
   name: string;
 
   @IsNotEmpty()
-  @MinLength(5)
+  @Length(3, 100)
   detail: string;
 
   @IsNotEmpty()
@@ -14,6 +14,5 @@ export class CreateTicketDto {
   price: number;
 
   @IsNotEmpty()
-  @MinLength(1)
   type: string;
 }

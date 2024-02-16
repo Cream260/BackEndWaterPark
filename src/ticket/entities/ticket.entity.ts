@@ -3,9 +3,11 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Order } from '../../orders/entities/order.entity';
 
 @Entity()
 export class Ticket {
@@ -21,7 +23,7 @@ export class Ticket {
   @Column({ type: 'float', name: 'ticket_price' })
   price: number;
 
-  @Column({ length: '50', name: 'ticket_type' })
+  @Column({ name: 'ticket_type' })
   type: string;
 
   @CreateDateColumn()
@@ -32,4 +34,7 @@ export class Ticket {
 
   @DeleteDateColumn()
   deletedDate: Date;
+
+  @OneToMany(() => Order, (order) => order.ticket)
+  order: Order[];
 }

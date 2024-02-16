@@ -1,4 +1,4 @@
-import { IsNotEmpty, Min } from 'class-validator';
+import { IsNotEmpty, IsOptional, Length, Min } from 'class-validator';
 
 export class CreateReceiptDto {
   @IsNotEmpty()
@@ -13,9 +13,13 @@ export class CreateReceiptDto {
   @Min(0)
   netPrice: number;
 
-  numPeople: number; //ยังไม่ ok
+  @IsOptional() // เพื่อระบุว่าค่านี้มีความเป็นเลือกได้
+  @Min(0)
+  numPeople: number | null; // can be null or number
 
-  nameComp: string;
+  @IsOptional() // เพื่อระบุว่าค่านี้มีความเป็นเลือกได้
+  @Length(3, 100)
+  nameComp: string | null; // can be null or number
 
   @IsNotEmpty()
   @Min(0)

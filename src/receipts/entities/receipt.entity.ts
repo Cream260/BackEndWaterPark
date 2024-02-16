@@ -3,9 +3,17 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Order } from '../../orders/entities/order.entity';
+import { Customer } from '../../customers/entities/customer.entity';
+import { Package } from '../../package/entities/package.entity';
+import { Event } from '../../event/entities/event.entity';
+import { Promotion } from '../../promotions/entities/promotion.entity';
 
 @Entity()
 export class Receipt {
@@ -21,10 +29,10 @@ export class Receipt {
   @Column({ type: 'float', name: 'rec_netPrice' })
   netPrice: number;
 
-  @Column({ name: 'rec_numPeople' })
+  @Column({ name: 'rec_numPeople', nullable: true }) // can be null
   numPeople: number;
 
-  @Column({ length: '100', name: 'rec_nameComp' })
+  @Column({ length: '100', name: 'rec_nameComp', nullable: true }) // can be null
   nameComp: string;
 
   @Column({ type: 'float', name: 'discount' })
@@ -44,4 +52,19 @@ export class Receipt {
 
   @DeleteDateColumn()
   deletedDate: Date;
+
+  @OneToMany(() => Order, (order) => order.receipt)
+  order: Order[];
+
+  @ManyToOne(() => Customer, (customer) => customer.receipt)
+  customer: Customer;
+
+  @OneToOne(() => Package, (package_ticket) => package_ticket.receipt)
+  package: Package;
+
+  @OneToOne(() => Event, (event_ticket) => event_ticket.receipt)
+  event: Event;
+
+  @ManyToOne(() => Promotion, (promotion) => promotion.receipt)
+  promotion: Promotion;
 }

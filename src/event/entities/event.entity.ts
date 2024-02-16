@@ -3,9 +3,11 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Receipt } from '../../receipts/entities/receipt.entity';
 
 @Entity()
 export class Event {
@@ -29,4 +31,7 @@ export class Event {
 
   @DeleteDateColumn()
   deletedDate: Date;
+
+  @OneToOne(() => Receipt, (receipt) => receipt.event)
+  receipt: Receipt;
 }
