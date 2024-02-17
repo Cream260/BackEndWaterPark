@@ -1,17 +1,30 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { Event } from './entities/event.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Receipt } from '../receipts/entities/receipt.entity';
 
 @Injectable()
 export class EventService {
   constructor(
     @InjectRepository(Event)
     private eventRepository: Repository<Event>,
+    @InjectRepository(Receipt)
+    private receiptRepository: Repository<Receipt>,
   ) {}
-  create(createEventDto: CreateEventDto) {
+  async create(createEventDto: CreateEventDto) {
+    // const event = new Event();
+    // const receipt = new Receipt();
+    // event.name = createEventDto.name;
+    // event.detail = createEventDto.detail;
+    // event.price = createEventDto.price;
+    // receipt.totalPrice = createEventDto.price;
+    // receipt.netPrice = createEventDto.price;
+    // const rec = await this.receiptRepository.save(receipt);
+    // event.receipt = rec;
     return this.eventRepository.save(createEventDto);
   }
 

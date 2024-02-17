@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -17,10 +18,7 @@ export class Event {
   @Column({ length: '50', name: 'event_name' })
   name: string;
 
-  @Column({ length: '100', name: 'event_detail' })
-  detail: string;
-
-  @Column({ name: 'event_price' })
+  @Column({ type: 'float', name: 'event_price' })
   price: number;
 
   @CreateDateColumn()
@@ -33,5 +31,6 @@ export class Event {
   deletedDate: Date;
 
   @OneToOne(() => Receipt, (receipt) => receipt.event)
+  @JoinColumn()
   receipt: Receipt;
 }

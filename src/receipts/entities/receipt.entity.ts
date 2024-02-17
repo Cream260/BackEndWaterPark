@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -19,6 +20,9 @@ import { Promotion } from '../../promotions/entities/promotion.entity';
 export class Receipt {
   @PrimaryGeneratedColumn({ name: 'rec_id' })
   id: number;
+
+  @Column({ length: '100', name: 'rec_name', nullable: true }) // can be null
+  name: string;
 
   @Column({ name: 'rec_qty' })
   qty: number;
@@ -60,9 +64,11 @@ export class Receipt {
   customer: Customer;
 
   @OneToOne(() => Package, (package_ticket) => package_ticket.receipt)
+  @JoinColumn()
   package: Package;
 
   @OneToOne(() => Event, (event_ticket) => event_ticket.receipt)
+  @JoinColumn()
   event: Event;
 
   @ManyToOne(() => Promotion, (promotion) => promotion.receipt)
