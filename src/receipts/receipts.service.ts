@@ -11,6 +11,7 @@ import { Order } from '../orders/entities/order.entity';
 import { Ticket } from '../ticket/entities/ticket.entity';
 import { Event } from '../event/entities/event.entity';
 import { Package } from '../package/entities/package.entity';
+import { EventService } from '../event/event.service';
 
 @Injectable()
 export class ReceiptsService {
@@ -37,8 +38,13 @@ export class ReceiptsService {
     const promotion = await this.PromotionRepository.findOneBy({
       id: createReceiptDto.promoId,
     });
+    const event = await this.EventRepository.findOneBy({
+      id: createReceiptDto.eventId,
+    });
+    const packages = await this.PackageRepository.findOneBy({
+      id: createReceiptDto.packageId,
+    });
     const receipt: Receipt = new Receipt();
-    receipt.name = createReceiptDto.name;
     receipt.qty = createReceiptDto.qty;
     receipt.totalPrice = createReceiptDto.totalPrice;
     receipt.netPrice = createReceiptDto.totalPrice - createReceiptDto.discount;
@@ -49,15 +55,35 @@ export class ReceiptsService {
     receipt.payments = createReceiptDto.payments;
     receipt.customer = customer;
     receipt.promotion = promotion;
+    receipt.event = event;
+    receipt.package = packages;
 
-    if (createReceiptDto.numPeople > 0 && !receipt.event) {
-      // สร้าง event ใหม่เมื่อ numPeople มากกว่า 0 และยังไม่มี event ที่ถูกสร้างไว้ก่อนหน้า
-      const event = new Event();
-      event.price = createReceiptDto.totalPrice;
-      event.name = createReceiptDto.name;
-      const newEvent = await this.EventRepository.save(event);
-      receipt.event = newEvent;
-    }
+    // if (createReceiptDto.numPeople > 0) {
+    //   // check ว่า numPeople มากกว่า 0 แสดงว่าเป็น event
+    //   const event = await this.EventRepository.findOneBy({
+    //     name: createReceiptDto.name, //find receipts name ชื่อเหมือน event ไหน
+    //   });
+    //   if (event) {
+    //     //find event
+    //     receipt.name = event.name;
+    //     receipt.totalPrice = event.price;
+    //     receipt.event = event;
+    //   }
+    // } else if (
+    //   createReceiptDto.name != null &&
+    //   createReceiptDto.numPeople == null
+    // ) {
+    //   // check ว่า name ไม่เท่ากับ null และ numPeople เท่ากับ null
+    //   const packages = await this.PackageRepository.findOneBy({
+    //     name: createReceiptDto.name, //find receipts name ชื่อเหมือน package ไหน
+    //   });
+    //   if (packages) {
+    //     //find packages
+    //     receipt.name = packages.name;
+    //     receipt.totalPrice = packages.price;
+    //     receipt.package = packages;
+    //   }
+    // }
     await this.ReceiptRepository.save(receipt);
 
     for (const orderItem of createReceiptDto.order) {
@@ -88,14 +114,28 @@ export class ReceiptsService {
 
   findAll() {
     return this.ReceiptRepository.find({
-      relations: ['customer', 'promotion', 'order', 'order.ticket'],
+      relations: [
+        'customer',
+        'promotion',
+        'event',
+        'package',
+        'order',
+        'order.ticket',
+      ],
     });
   }
 
   async findOne(id: number) {
     const Receipt = await this.ReceiptRepository.findOne({
       where: { id: id },
-      relations: ['customer', 'promotion', 'order', 'order.ticket'],
+      relations: [
+        'customer',
+        'promotion',
+        'event',
+        'package',
+        'order',
+        'order.ticket',
+      ],
     });
     if (!Receipt) {
       throw new NotFoundException('Receipt not found');

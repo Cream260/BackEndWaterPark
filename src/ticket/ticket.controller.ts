@@ -39,4 +39,8 @@ export class TicketController {
   remove(@Param('id') id: string) {
     return this.ticketService.remove(+id);
   }
+  // @Get('search/:type')
+  // findTicketByType(@Param('type') type: string) {
+  //   return this.ticketService.findTicketByType(type);
+  // }
 }

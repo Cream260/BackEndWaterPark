@@ -3,8 +3,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  JoinColumn,
-  OneToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -30,7 +29,6 @@ export class Event {
   @DeleteDateColumn()
   deletedDate: Date;
 
-  @OneToOne(() => Receipt, (receipt) => receipt.event)
-  @JoinColumn()
-  receipt: Receipt;
+  @OneToMany(() => Receipt, (receipt) => receipt.event)
+  receipt: Receipt[];
 }

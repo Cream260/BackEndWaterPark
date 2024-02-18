@@ -3,10 +3,8 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -20,9 +18,6 @@ import { Promotion } from '../../promotions/entities/promotion.entity';
 export class Receipt {
   @PrimaryGeneratedColumn({ name: 'rec_id' })
   id: number;
-
-  @Column({ length: '100', name: 'rec_name', nullable: true }) // can be null
-  name: string;
 
   @Column({ name: 'rec_qty' })
   qty: number;
@@ -63,12 +58,10 @@ export class Receipt {
   @ManyToOne(() => Customer, (customer) => customer.receipt)
   customer: Customer;
 
-  @OneToOne(() => Package, (package_ticket) => package_ticket.receipt)
-  @JoinColumn()
+  @ManyToOne(() => Package, (package_ticket) => package_ticket.receipt)
   package: Package;
 
-  @OneToOne(() => Event, (event_ticket) => event_ticket.receipt)
-  @JoinColumn()
+  @ManyToOne(() => Event, (event_ticket) => event_ticket.receipt)
   event: Event;
 
   @ManyToOne(() => Promotion, (promotion) => promotion.receipt)
