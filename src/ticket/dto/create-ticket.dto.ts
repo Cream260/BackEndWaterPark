@@ -5,10 +5,6 @@ export class CreateTicketDto {
   name: string;
 
   @IsNotEmpty()
-  @Length(3, 100)
-  detail: string;
-
-  @IsNotEmpty()
   @IsNumber()
   @Min(0)
   price: number;

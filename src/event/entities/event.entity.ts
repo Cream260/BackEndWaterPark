@@ -20,6 +20,9 @@ export class Event {
   @Column({ type: 'float', name: 'event_price' })
   price: number;
 
+  @Column({ length: '50', name: 'event_type' })
+  type: string;
+
   @CreateDateColumn()
   createdDate: Date;
 

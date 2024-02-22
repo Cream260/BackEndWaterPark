@@ -53,6 +53,8 @@ export class ReceiptsService {
     receipt.discount = createReceiptDto.discount;
     receipt.received = createReceiptDto.received;
     receipt.payments = createReceiptDto.payments;
+    receipt.startDare = createReceiptDto.startDare;
+    receipt.expDate = createReceiptDto.expDate;
     receipt.customer = customer;
     receipt.promotion = promotion;
     receipt.event = event;
@@ -96,6 +98,7 @@ export class ReceiptsService {
         console.log('found ticket');
         const order = new Order();
         order.name = orderItem.name;
+        order.type = orderItem.type;
         order.price = orderItem.price;
         order.totalPrice = orderItem.totalPrice;
         order.qty = orderItem.qty;
@@ -103,6 +106,8 @@ export class ReceiptsService {
         order.endDate = orderItem.endDate;
         order.ticket = ticket;
         await this.OrderRepository.save(order);
+        receipt.startDare = orderItem.startDate;
+        receipt.expDate = orderItem.endDate;
       }
     }
     await this.ReceiptRepository.save(receipt);

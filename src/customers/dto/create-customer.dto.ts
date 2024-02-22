@@ -6,8 +6,18 @@ export class CreateCustomerDto {
   name: string;
 
   @IsNotEmpty()
+  @Length(3, 64)
+  username: string;
+
+  @IsNotEmpty()
+  @Length(3, 64)
+  // @Matches(
+  //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+  // )
+  password: string;
+
+  @IsNotEmpty()
   @IsEmail()
-  @Length(11, 50)
   email: string;
 
   @IsNotEmpty()

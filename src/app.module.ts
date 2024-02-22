@@ -16,6 +16,10 @@ import { OrdersModule } from './orders/orders.module';
 import { Order } from './orders/entities/order.entity';
 import { ReceiptsModule } from './receipts/receipts.module';
 import { Receipt } from './receipts/entities/receipt.entity';
+import { ReviewsModule } from './reviews/reviews.module';
+import { PlaygroundsModule } from './playgrounds/playgrounds.module';
+import { Playground } from './playgrounds/entities/playground.entity';
+import { Review } from './reviews/entities/review.entity';
 
 @Module({
   imports: [
@@ -26,6 +30,8 @@ import { Receipt } from './receipts/entities/receipt.entity';
     CustomersModule,
     OrdersModule,
     ReceiptsModule,
+    ReviewsModule,
+    PlaygroundsModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -33,7 +39,17 @@ import { Receipt } from './receipts/entities/receipt.entity';
       username: 'root',
       password: '',
       database: 'waterpark',
-      entities: [Promotion, Event, Package, Ticket, Customer, Order, Receipt],
+      entities: [
+        Promotion,
+        Event,
+        Package,
+        Ticket,
+        Customer,
+        Order,
+        Receipt,
+        Playground,
+        Review,
+      ],
       synchronize: true,
     }),
   ],

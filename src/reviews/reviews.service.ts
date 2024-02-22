@@ -1,0 +1,72 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateReviewDto } from './dto/create-review.dto';
+import { UpdateReviewDto } from './dto/update-review.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Review } from './entities/review.entity';
+import { Repository } from 'typeorm';
+import { Customer } from '../customers/entities/customer.entity';
+import { Playground } from '../playgrounds/entities/playground.entity';
+
+@Injectable()
+export class ReviewsService {
+  constructor(
+    @InjectRepository(Review)
+    private reviewRepository: Repository<Review>,
+    @InjectRepository(Customer)
+    private customerRepository: Repository<Customer>,
+    @InjectRepository(Playground)
+    private playgroundRepository: Repository<Playground>,
+  ) {}
+  async create(createReviewDto: CreateReviewDto) {
+    const customer = await this.customerRepository.findOneBy({
+      id: createReviewDto.cusId,
+    });
+    const playground = await this.playgroundRepository.findOneBy({
+      id: createReviewDto.playId,
+    });
+    const review: Review = new Review();
+    review.rate = createReviewDto.rate;
+    review.text = createReviewDto.text;
+    review.customer = customer;
+    review.playground = playground;
+    return this.reviewRepository.save(review);
+  }
+
+  findAll() {
+    return this.reviewRepository.find({
+      relations: ['customer', 'playground'],
+    });
+  }
+
+  async findOne(id: number) {
+    const review = await this.reviewRepository.findOne({
+      where: { id: id },
+      relations: ['customer', 'playground'],
+    });
+    if (!review) {
+      throw new NotFoundException('review not found');
+    } else {
+      return review;
+    }
+  }
+
+  async update(id: number, updateReviewDto: UpdateReviewDto) {
+    const review = await this.reviewRepository.findOneBy({ id: id });
+    if (!review) {
+      throw new NotFoundException('review not found');
+    }
+    return await this.reviewRepository.save({
+      ...review,
+      ...updateReviewDto,
+    });
+  }
+
+  async remove(id: number) {
+    const review = await this.reviewRepository.findOneBy({ id: id });
+    if (!review) {
+      throw new NotFoundException('review not found');
+    }
+    return this.reviewRepository.softRemove(review);
+  }
+}

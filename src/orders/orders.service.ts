@@ -39,6 +39,7 @@ export class OrdersService {
     });
     const order: Order = new Order();
     order.name = createOrderDto.name;
+    order.type = createOrderDto.type;
     order.price = createOrderDto.price;
     order.totalPrice = createOrderDto.totalPrice;
     order.qty = createOrderDto.qty;
