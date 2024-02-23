@@ -9,6 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Receipt } from '../../receipts/entities/receipt.entity';
+import { WristbandDetail } from '../../wristband_details/entities/wristband_detail.entity';
 
 @Entity()
 export class Wristband {
@@ -40,6 +41,6 @@ export class Wristband {
   @ManyToOne(() => Receipt, (reciept) => reciept.wristband)
   receipt: Receipt;
   
-  // @OneToMany(() => Order, (order) => order.ticket)
-  // order: Order[];
+  @OneToMany(() => WristbandDetail, (wristbandDetail) => wristbandDetail.wristband)
+  wristbandDetail: WristbandDetail;
 }

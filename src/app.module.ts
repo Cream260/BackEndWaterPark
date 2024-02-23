@@ -18,6 +18,7 @@ import { ReceiptsModule } from './receipts/receipts.module';
 import { Receipt } from './receipts/entities/receipt.entity';
 import { WristbandsModule } from './wristbands/wristbands.module';
 import { Wristband } from './wristbands/entities/wristband.entity';
+import { WristbandDetailsModule } from './wristband_details/wristband_details.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { Wristband } from './wristbands/entities/wristband.entity';
       synchronize: true,
     }),
     WristbandsModule,
+    WristbandDetailsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
