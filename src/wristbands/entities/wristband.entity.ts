@@ -3,10 +3,12 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Receipt } from '../../receipts/entities/receipt.entity';
 
 @Entity()
 export class Wristband {
@@ -35,6 +37,9 @@ export class Wristband {
   @DeleteDateColumn()
   deletedDate: Date;
 
+  @ManyToOne(() => Receipt, (reciept) => reciept.wristband)
+  receipt: Receipt;
+  
   // @OneToMany(() => Order, (order) => order.ticket)
   // order: Order[];
 }

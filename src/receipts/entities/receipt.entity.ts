@@ -13,6 +13,7 @@ import { Customer } from '../../customers/entities/customer.entity';
 import { Package } from '../../package/entities/package.entity';
 import { Event } from '../../event/entities/event.entity';
 import { Promotion } from '../../promotions/entities/promotion.entity';
+import { Wristband } from '../../wristbands/entities/wristband.entity';
 
 @Entity()
 export class Receipt {
@@ -54,6 +55,9 @@ export class Receipt {
 
   @OneToMany(() => Order, (order) => order.receipt)
   order: Order[];
+
+  @OneToMany(() => Wristband, (wristband) => wristband.receipt)
+  wristband: Wristband[];
 
   @ManyToOne(() => Customer, (customer) => customer.receipt)
   customer: Customer;
