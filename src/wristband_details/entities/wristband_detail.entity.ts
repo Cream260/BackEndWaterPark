@@ -31,7 +31,7 @@ export class WristbandDetail {
   @ManyToOne(() => Wristband, (wristband) => wristband.wristbandDetail)
   wristband: Wristband;
 
-  // @OneToMany(() => Order, (order) => order.ticket)
-  // order: Order[];
+  // @OneToMany(() => PlayGround, (playGround) => playGround.wristbandDetail)
+  // playGround: PlayFround[];
 }
 

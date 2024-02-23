@@ -19,6 +19,7 @@ import { Receipt } from './receipts/entities/receipt.entity';
 import { WristbandsModule } from './wristbands/wristbands.module';
 import { Wristband } from './wristbands/entities/wristband.entity';
 import { WristbandDetailsModule } from './wristband_details/wristband_details.module';
+import { WristbandDetail } from './wristband_details/entities/wristband_detail.entity';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { WristbandDetailsModule } from './wristband_details/wristband_details.mo
     TicketModule,
     CustomersModule,
     WristbandsModule,
+    WristbandDetailsModule,
     OrdersModule,
     ReceiptsModule,
     TypeOrmModule.forRoot({
@@ -37,7 +39,7 @@ import { WristbandDetailsModule } from './wristband_details/wristband_details.mo
       username: 'root',
       password: '',
       database: 'waterpark',
-      entities: [Promotion, Event, Package, Ticket, Customer, Order, Receipt, Wristband],
+      entities: [Promotion, Event, Package, Ticket, Customer, Order, Receipt, Wristband, WristbandDetail],
       synchronize: true,
     }),
     WristbandsModule,
