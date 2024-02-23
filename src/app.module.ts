@@ -20,6 +20,10 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { PlaygroundsModule } from './playgrounds/playgrounds.module';
 import { Playground } from './playgrounds/entities/playground.entity';
 import { Review } from './reviews/entities/review.entity';
+import { WristbandsModule } from './wristbands/wristbands.module';
+import { Wristband } from './wristbands/entities/wristband.entity';
+import { WristbandDetailsModule } from './wristband_details/wristband_details.module';
+import { WristbandDetail } from './wristband_details/entities/wristband_detail.entity';
 
 @Module({
   imports: [
@@ -28,6 +32,8 @@ import { Review } from './reviews/entities/review.entity';
     PackageModule,
     TicketModule,
     CustomersModule,
+    WristbandsModule,
+    WristbandDetailsModule,
     OrdersModule,
     ReceiptsModule,
     ReviewsModule,
@@ -49,6 +55,8 @@ import { Review } from './reviews/entities/review.entity';
         Receipt,
         Playground,
         Review,
+        Wristband,
+        WristbandDetail,
       ],
       synchronize: true,
     }),
