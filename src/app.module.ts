@@ -16,6 +16,7 @@ import { OrdersModule } from './orders/orders.module';
 import { Order } from './orders/entities/order.entity';
 import { ReceiptsModule } from './receipts/receipts.module';
 import { Receipt } from './receipts/entities/receipt.entity';
+import { WristbandsModule } from './wristbands/wristbands.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { Receipt } from './receipts/entities/receipt.entity';
       entities: [Promotion, Event, Package, Ticket, Customer, Order, Receipt],
       synchronize: true,
     }),
+    WristbandsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
