@@ -25,6 +25,7 @@ import { WristbandsModule } from './wristbands/wristbands.module';
     PackageModule,
     TicketModule,
     CustomersModule,
+    WristbandsModule,
     OrdersModule,
     ReceiptsModule,
     TypeOrmModule.forRoot({
