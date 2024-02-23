@@ -4,8 +4,8 @@ export class CreatePackageDto {
   @MinLength(5)
   name: string;
 
-  @IsNotEmpty()
-  detail: string;
+  // @IsNotEmpty()
+  // detail: string;
 
   @IsNotEmpty()
   @IsNumber()

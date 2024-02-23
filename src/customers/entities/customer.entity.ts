@@ -10,16 +10,18 @@ import {
 import { Receipt } from '../../receipts/entities/receipt.entity';
 
 @Entity()
-export class Event {
-  @PrimaryGeneratedColumn({ name: 'event_id' })
+export class Customer {
+  @PrimaryGeneratedColumn({ name: 'cus_id' })
   id: number;
 
-  @Column({ length: '50', name: 'event_name' })
+  @Column({ length: '50', name: 'cus_name' })
   name: string;
 
+  @Column({ length: '100', name: 'cus_email', unique: true })
+  email: string;
 
-  @Column({ type: 'float', name: 'event_price' })
-  price: number;
+  @Column({ unique: true, name: 'cus_tel' })
+  tel: string;
 
   @CreateDateColumn()
   createdDate: Date;
@@ -30,6 +32,6 @@ export class Event {
   @DeleteDateColumn()
   deletedDate: Date;
 
-  @OneToMany(() => Receipt, (receipt) => receipt.event)
+  @OneToMany(() => Receipt, (receipt) => receipt.customer)
   receipt: Receipt[];
 }
