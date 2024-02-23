@@ -16,12 +16,10 @@ export class Wristband {
   @PrimaryGeneratedColumn({ name: 'wristband_id' })
   id: number;
 
+  
   @Column({ name: 'wristband_type' })
   type: string;
-
-  @Column({ length: '100', name: 'ticket_detail' })
-  detail: string;
-
+  
   @Column({ name: 'wristband_startDate' })
   startDate: Date;
 
@@ -37,6 +35,7 @@ export class Wristband {
 
   @DeleteDateColumn()
   deletedDate: Date;
+
 
   @ManyToOne(() => Receipt, (reciept) => reciept.wristband)
   receipt: Receipt;
