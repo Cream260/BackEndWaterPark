@@ -17,6 +17,7 @@ import { Order } from './orders/entities/order.entity';
 import { ReceiptsModule } from './receipts/receipts.module';
 import { Receipt } from './receipts/entities/receipt.entity';
 import { WristbandsModule } from './wristbands/wristbands.module';
+import { Wristband } from './wristbands/entities/wristband.entity';
 
 @Module({
   imports: [
@@ -35,7 +36,7 @@ import { WristbandsModule } from './wristbands/wristbands.module';
       username: 'root',
       password: '',
       database: 'waterpark',
-      entities: [Promotion, Event, Package, Ticket, Customer, Order, Receipt],
+      entities: [Promotion, Event, Package, Ticket, Customer, Order, Receipt, Wristband],
       synchronize: true,
     }),
     WristbandsModule,
