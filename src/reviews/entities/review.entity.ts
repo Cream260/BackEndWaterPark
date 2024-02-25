@@ -7,8 +7,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Customer } from '../../customers/entities/customer.entity';
 import { Playground } from '../../playgrounds/entities/playground.entity';
+import { Wristband } from '../../wristbands/entities/wristband.entity';
 
 @Entity()
 export class Review {
@@ -30,8 +30,8 @@ export class Review {
   @DeleteDateColumn()
   deletedDate: Date;
 
-  @ManyToOne(() => Customer, (customer) => customer.review)
-  customer: Customer;
+  @ManyToOne(() => Wristband, (wristband) => wristband.review)
+  wristband: Wristband;
 
   @ManyToOne(() => Playground, (playground) => playground.review)
   playground: Playground;

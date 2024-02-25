@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Review } from '../../reviews/entities/review.entity';
+import { WristbandDetail } from '../../wristband_details/entities/wristband_detail.entity';
 
 @Entity()
 export class Playground {
@@ -49,4 +50,10 @@ export class Playground {
 
   @OneToMany(() => Review, (review) => review.playground)
   review: Review[];
+
+  @OneToMany(
+    () => WristbandDetail,
+    (wristbandDetail) => wristbandDetail.playground,
+  )
+  wristbandDetail: WristbandDetail[];
 }

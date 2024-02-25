@@ -5,22 +5,22 @@ import { UpdateReviewDto } from './dto/update-review.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Review } from './entities/review.entity';
 import { Repository } from 'typeorm';
-import { Customer } from '../customers/entities/customer.entity';
 import { Playground } from '../playgrounds/entities/playground.entity';
+import { Wristband } from '../wristbands/entities/wristband.entity';
 
 @Injectable()
 export class ReviewsService {
   constructor(
     @InjectRepository(Review)
     private reviewRepository: Repository<Review>,
-    @InjectRepository(Customer)
-    private customerRepository: Repository<Customer>,
+    @InjectRepository(Wristband)
+    private wristbandRepository: Repository<Wristband>,
     @InjectRepository(Playground)
     private playgroundRepository: Repository<Playground>,
   ) {}
   async create(createReviewDto: CreateReviewDto) {
-    const customer = await this.customerRepository.findOneBy({
-      id: createReviewDto.cusId,
+    const wristband = await this.wristbandRepository.findOneBy({
+      id: createReviewDto.wristbandId,
     });
     const playground = await this.playgroundRepository.findOneBy({
       id: createReviewDto.playId,
@@ -28,21 +28,21 @@ export class ReviewsService {
     const review: Review = new Review();
     review.rate = createReviewDto.rate;
     review.text = createReviewDto.text;
-    review.customer = customer;
+    review.wristband = wristband;
     review.playground = playground;
     return this.reviewRepository.save(review);
   }
 
   findAll() {
     return this.reviewRepository.find({
-      relations: ['customer', 'playground'],
+      relations: ['wristband', 'playground'],
     });
   }
 
   async findOne(id: number) {
     const review = await this.reviewRepository.findOne({
       where: { id: id },
-      relations: ['customer', 'playground'],
+      relations: ['wristband', 'playground'],
     });
     if (!review) {
       throw new NotFoundException('review not found');

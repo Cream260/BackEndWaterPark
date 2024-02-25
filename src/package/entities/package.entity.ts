@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Receipt } from '../../receipts/entities/receipt.entity';
+import { PackageDetail } from '../../package_details/entities/package_detail.entity';
 
 @Entity()
 export class Package {
@@ -20,6 +21,9 @@ export class Package {
   @Column({ type: 'float', name: 'package_price' })
   price: number;
 
+  @Column({ name: 'package_qty' })
+  qty: number;
+
   @CreateDateColumn()
   createdDate: Date;
 
@@ -31,4 +35,7 @@ export class Package {
 
   @OneToMany(() => Receipt, (receipt) => receipt.package)
   receipt: Receipt[];
+
+  @OneToMany(() => PackageDetail, (package_detail) => package_detail.package)
+  package_detail: PackageDetail[];
 }

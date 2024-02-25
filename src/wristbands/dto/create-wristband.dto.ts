@@ -9,4 +9,7 @@ export class CreateWristbandDto {
 
   @IsNotEmpty()
   endDate: Date;
+
+  @IsNotEmpty()
+  receiptId: number;
 }

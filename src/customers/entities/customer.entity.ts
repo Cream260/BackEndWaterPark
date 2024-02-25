@@ -8,7 +8,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Receipt } from '../../receipts/entities/receipt.entity';
-import { Review } from '../../reviews/entities/review.entity';
 
 @Entity()
 export class Customer {
@@ -41,7 +40,4 @@ export class Customer {
 
   @OneToMany(() => Receipt, (receipt) => receipt.customer)
   receipt: Receipt[];
-
-  @OneToMany(() => Review, (review) => review.customer)
-  review: Review[];
 }

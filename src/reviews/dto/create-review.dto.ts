@@ -8,7 +8,7 @@ export class CreateReviewDto {
   text: string;
 
   @IsNotEmpty()
-  cusId: number;
+  wristbandId: number;
 
   @IsNotEmpty()
   playId: number;

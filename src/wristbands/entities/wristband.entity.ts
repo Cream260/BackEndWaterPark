@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Receipt } from '../../receipts/entities/receipt.entity';
 import { WristbandDetail } from '../../wristband_details/entities/wristband_detail.entity';
+import { Review } from '../../reviews/entities/review.entity';
 
 @Entity()
 export class Wristband {
@@ -34,12 +35,15 @@ export class Wristband {
   @DeleteDateColumn()
   deletedDate: Date;
 
-  @ManyToOne(() => Receipt, (reciept) => reciept.wristband)
+  @ManyToOne(() => Receipt, (receipt) => receipt.wristband)
   receipt: Receipt;
 
   @OneToMany(
     () => WristbandDetail,
     (wristbandDetail) => wristbandDetail.wristband,
   )
-  wristbandDetail: WristbandDetail;
+  wristbandDetail: WristbandDetail[];
+
+  @OneToMany(() => Review, (review) => review.wristband)
+  review: Review[];
 }

@@ -11,7 +11,8 @@ import { Order } from '../orders/entities/order.entity';
 import { Ticket } from '../ticket/entities/ticket.entity';
 import { Event } from '../event/entities/event.entity';
 import { Package } from '../package/entities/package.entity';
-import { EventService } from '../event/event.service';
+import { Wristband } from '../wristbands/entities/wristband.entity';
+import { WristbandsService } from '../wristbands/wristbands.service';
 
 @Injectable()
 export class ReceiptsService {
@@ -30,6 +31,9 @@ export class ReceiptsService {
     private EventRepository: Repository<Event>,
     @InjectRepository(Package)
     private PackageRepository: Repository<Package>,
+    @InjectRepository(Wristband)
+    private WristbandRepository: Repository<Wristband>,
+    private readonly wristbandService: WristbandsService,
   ) {}
   async create(createReceiptDto: CreateReceiptDto) {
     const customer = await this.CustomerRepository.findOneBy({
@@ -45,12 +49,10 @@ export class ReceiptsService {
       id: createReceiptDto.packageId,
     });
     const receipt: Receipt = new Receipt();
-    receipt.qty = createReceiptDto.qty;
-    receipt.totalPrice = createReceiptDto.totalPrice;
-    receipt.netPrice = createReceiptDto.totalPrice - createReceiptDto.discount;
+    receipt.qty = 0;
+    receipt.totalPrice = 0;
     receipt.numPeople = createReceiptDto.numPeople;
     receipt.nameComp = createReceiptDto.nameComp;
-    receipt.discount = createReceiptDto.discount;
     receipt.received = createReceiptDto.received;
     receipt.payments = createReceiptDto.payments;
     receipt.startDare = createReceiptDto.startDare;
@@ -60,37 +62,30 @@ export class ReceiptsService {
     receipt.event = event;
     receipt.package = packages;
 
-    // if (createReceiptDto.numPeople > 0) {
-    //   // check ว่า numPeople มากกว่า 0 แสดงว่าเป็น event
-    //   const event = await this.EventRepository.findOneBy({
-    //     name: createReceiptDto.name, //find receipts name ชื่อเหมือน event ไหน
-    //   });
-    //   if (event) {
-    //     //find event
-    //     receipt.name = event.name;
-    //     receipt.totalPrice = event.price;
-    //     receipt.event = event;
-    //   }
-    // } else if (
-    //   createReceiptDto.name != null &&
-    //   createReceiptDto.numPeople == null
-    // ) {
-    //   // check ว่า name ไม่เท่ากับ null และ numPeople เท่ากับ null
-    //   const packages = await this.PackageRepository.findOneBy({
-    //     name: createReceiptDto.name, //find receipts name ชื่อเหมือน package ไหน
-    //   });
-    //   if (packages) {
-    //     //find packages
-    //     receipt.name = packages.name;
-    //     receipt.totalPrice = packages.price;
-    //     receipt.package = packages;
-    //   }
-    // }
+    if (receipt.promotion != null) {
+      receipt.discount = receipt.promotion.discount;
+    }
+
+    if (receipt.event != null) {
+      receipt.totalPrice = receipt.event.price * receipt.numPeople;
+      receipt.qty = receipt.numPeople;
+      receipt.netPrice = receipt.totalPrice;
+    }
+
+    if (receipt.package != null) {
+      receipt.totalPrice = receipt.package.price;
+      receipt.qty = receipt.package.qty;
+      receipt.netPrice = receipt.package.price;
+    }
     await this.ReceiptRepository.save(receipt);
 
     for (const orderItem of createReceiptDto.order) {
+      const whereClause: any = { name: orderItem.name };
+      if (orderItem.type) {
+        whereClause.type = orderItem.type; // check type ว่านอกจาก name แล้ว type ยังตรงไหม
+      }
       const ticket = await this.TicketRepository.findOne({
-        where: { name: orderItem.name },
+        where: whereClause,
         relations: ['order'],
       });
 
@@ -105,9 +100,13 @@ export class ReceiptsService {
         order.startDate = orderItem.startDate;
         order.endDate = orderItem.endDate;
         order.ticket = ticket;
+        order.receipt = receipt;
         await this.OrderRepository.save(order);
-        receipt.startDare = orderItem.startDate;
-        receipt.expDate = orderItem.endDate;
+        receipt.qty = receipt.qty + order.qty; //บวกจำนวนทั้งหมดของ order
+        receipt.totalPrice = receipt.totalPrice + order.totalPrice; //บวกราคาทั้งหมดของ order
+        receipt.netPrice = receipt.totalPrice - receipt.promotion.discount;
+        receipt.startDare = order.startDate;
+        receipt.expDate = order.endDate;
       }
     }
     await this.ReceiptRepository.save(receipt);
@@ -124,6 +123,7 @@ export class ReceiptsService {
         'promotion',
         'event',
         'package',
+        'package.package_detail',
         'order',
         'order.ticket',
       ],
@@ -138,6 +138,7 @@ export class ReceiptsService {
         'promotion',
         'event',
         'package',
+        'package.package_detail',
         'order',
         'order.ticket',
       ],

@@ -1,5 +1,6 @@
-import { IsArray, IsNotEmpty, IsOptional, Length, Min } from 'class-validator';
+import { IsNotEmpty, IsOptional, Length, Min } from 'class-validator';
 import { Order } from '../../orders/entities/order.entity';
+// import { Wristband } from '../../wristbands/entities/wristband.entity';
 
 export class CreateReceiptDto {
   @IsNotEmpty()
@@ -52,6 +53,8 @@ export class CreateReceiptDto {
   packageId: number;
 
   @IsNotEmpty()
-  @IsArray()
   order: Order[];
+
+  //   @IsNotEmpty()
+  //   wristband: Wristband[];
 }

@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Wristband } from '../../wristbands/entities/wristband.entity';
+import { Playground } from '../../playgrounds/entities/playground.entity';
 
 @Entity()
 export class WristbandDetail {
@@ -29,6 +30,6 @@ export class WristbandDetail {
   @ManyToOne(() => Wristband, (wristband) => wristband.wristbandDetail)
   wristband: Wristband;
 
-  // @OneToMany(() => PlayGround, (playGround) => playGround.wristbandDetail)
-  // playGround: PlayFround[];
+  @ManyToOne(() => Playground, (playground) => playground.wristbandDetail)
+  playground: Playground;
 }

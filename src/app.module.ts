@@ -24,6 +24,8 @@ import { WristbandsModule } from './wristbands/wristbands.module';
 import { Wristband } from './wristbands/entities/wristband.entity';
 import { WristbandDetailsModule } from './wristband_details/wristband_details.module';
 import { WristbandDetail } from './wristband_details/entities/wristband_detail.entity';
+import { PackageDetailsModule } from './package_details/package_details.module';
+import { PackageDetail } from './package_details/entities/package_detail.entity';
 
 @Module({
   imports: [
@@ -38,6 +40,7 @@ import { WristbandDetail } from './wristband_details/entities/wristband_detail.e
     ReceiptsModule,
     ReviewsModule,
     PlaygroundsModule,
+    PackageDetailsModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -57,6 +60,7 @@ import { WristbandDetail } from './wristband_details/entities/wristband_detail.e
         Review,
         Wristband,
         WristbandDetail,
+        PackageDetail,
       ],
       synchronize: true,
     }),
