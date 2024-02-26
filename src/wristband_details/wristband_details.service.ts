@@ -25,11 +25,12 @@ export class WristbandDetailsService {
     const playground = await this.playgroundRepository.findOneBy({
       id: CreateWristbandDetailDto.playId,
     });
-    const wd = new WristbandDetail();
-    wd.sum = CreateWristbandDetailDto.sum;
-    wd.wristband = wristband;
-    wd.playground = playground;
-    return this.wristbandDetailRepository.save(wd);
+    const wristband_detail = new WristbandDetail();
+    wristband_detail.namePlay = CreateWristbandDetailDto.namePlay;
+    wristband_detail.sum = CreateWristbandDetailDto.sum;
+    wristband_detail.wristband = wristband;
+    wristband_detail.playground = playground;
+    return this.wristbandDetailRepository.save(wristband_detail);
   }
 
   findAll() {

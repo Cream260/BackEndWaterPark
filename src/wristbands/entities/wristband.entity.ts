@@ -40,9 +40,9 @@ export class Wristband {
 
   @OneToMany(
     () => WristbandDetail,
-    (wristbandDetail) => wristbandDetail.wristband,
+    (wristband_detail) => wristband_detail.wristband,
   )
-  wristbandDetail: WristbandDetail[];
+  wristband_detail: WristbandDetail[];
 
   @OneToMany(() => Review, (review) => review.wristband)
   review: Review[];

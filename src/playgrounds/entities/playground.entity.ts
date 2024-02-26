@@ -55,5 +55,5 @@ export class Playground {
     () => WristbandDetail,
     (wristbandDetail) => wristbandDetail.playground,
   )
-  wristbandDetail: WristbandDetail[];
+  wristband_detail: WristbandDetail[];
 }

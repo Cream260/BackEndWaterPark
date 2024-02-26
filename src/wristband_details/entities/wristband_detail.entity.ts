@@ -15,6 +15,9 @@ export class WristbandDetail {
   @PrimaryGeneratedColumn({ name: 'wbdt_id' })
   id: number;
 
+  @Column({ name: 'wbdt_name' })
+  namePlay: string;
+
   @Column({ name: 'wbdt_sum' })
   sum: number;
 
@@ -27,9 +30,9 @@ export class WristbandDetail {
   @DeleteDateColumn()
   deletedDate: Date;
 
-  @ManyToOne(() => Wristband, (wristband) => wristband.wristbandDetail)
+  @ManyToOne(() => Wristband, (wristband) => wristband.wristband_detail)
   wristband: Wristband;
 
-  @ManyToOne(() => Playground, (playground) => playground.wristbandDetail)
+  @ManyToOne(() => Playground, (playground) => playground.wristband_detail)
   playground: Playground;
 }
