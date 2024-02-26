@@ -13,6 +13,7 @@ import { Wristband } from '../wristbands/entities/wristband.entity';
 import { WristbandsService } from '../wristbands/wristbands.service';
 import { WristbandDetail } from '../wristband_details/entities/wristband_detail.entity';
 import { Playground } from '../playgrounds/entities/playground.entity';
+import { Review } from '../reviews/entities/review.entity';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { Playground } from '../playgrounds/entities/playground.entity';
       Wristband,
       WristbandDetail,
       Playground,
+      Review,
     ]),
   ],
   controllers: [ReceiptsController],

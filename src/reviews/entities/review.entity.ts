@@ -15,6 +15,9 @@ export class Review {
   @PrimaryGeneratedColumn({ name: 'review_id' })
   id: number;
 
+  @Column({ name: 'review_namePlay' })
+  name: string;
+
   @Column({ name: 'review_rate' })
   rate: number;
 

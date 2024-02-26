@@ -26,6 +26,7 @@ export class ReviewsService {
       id: createReviewDto.playId,
     });
     const review: Review = new Review();
+    review.name = createReviewDto.name;
     review.rate = createReviewDto.rate;
     review.text = createReviewDto.text;
     review.wristband = wristband;

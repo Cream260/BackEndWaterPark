@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { Receipt } from '../receipts/entities/receipt.entity';
 import { Playground } from '../playgrounds/entities/playground.entity';
 import { WristbandDetail } from '../wristband_details/entities/wristband_detail.entity';
+import { Review } from '../reviews/entities/review.entity';
 
 @Injectable()
 export class WristbandsService {
@@ -20,6 +21,8 @@ export class WristbandsService {
     private receiptRepository: Repository<Receipt>,
     @InjectRepository(Playground)
     private playgroundRepository: Repository<Playground>,
+    @InjectRepository(Review)
+    private reviewRepository: Repository<Review>,
   ) {}
   async create(createWristbandDto: CreateWristbandDto) {
     const receipt = await this.receiptRepository.findOne({
@@ -73,22 +76,53 @@ export class WristbandsService {
       }
     }
     await this.wristbandRepository.save(wristband);
+
+    for (const re of createWristbandDto.review) {
+      const playground = await this.playgroundRepository.findOne({
+        where: { name: re.name },
+        relations: ['review'],
+      });
+      if (playground) {
+        // console.log('found ticket');
+        const review = new Review();
+        review.name = re.name;
+        review.rate = re.rate;
+        review.text = re.text;
+        review.wristband = wristband;
+        review.playground = playground;
+        await this.reviewRepository.save(review);
+      }
+    }
+
+    await this.wristbandRepository.save(wristband);
     return await this.wristbandRepository.findOne({
       where: { id: wristband.id },
-      relations: ['wristband_detail'],
+      relations: ['wristband_detail', 'review'],
     });
   }
 
   findAll() {
     return this.wristbandRepository.find({
-      relations: ['receipt', 'wristband_detail', 'wristband_detail.playground'],
+      relations: [
+        'receipt',
+        'wristband_detail',
+        'wristband_detail.playground',
+        'review',
+        'review.playground',
+      ],
     });
   }
 
   async findOne(id: number) {
     const Order = await this.wristbandRepository.findOne({
       where: { id: id },
-      relations: ['receipt', 'wristband_detail', 'wristband_detail.playground'],
+      relations: [
+        'receipt',
+        'wristband_detail',
+        'wristband_detail.playground',
+        'review',
+        'review.playground',
+      ],
     });
     if (!Order) {
       throw new NotFoundException('Wristband not found');
