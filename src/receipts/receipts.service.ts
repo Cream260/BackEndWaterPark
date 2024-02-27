@@ -12,7 +12,6 @@ import { Ticket } from '../ticket/entities/ticket.entity';
 import { Event } from '../event/entities/event.entity';
 import { Package } from '../package/entities/package.entity';
 import { Wristband } from '../wristbands/entities/wristband.entity';
-import { WristbandsService } from '../wristbands/wristbands.service';
 
 @Injectable()
 export class ReceiptsService {
@@ -33,7 +32,6 @@ export class ReceiptsService {
     private PackageRepository: Repository<Package>,
     @InjectRepository(Wristband)
     private WristbandRepository: Repository<Wristband>,
-    private readonly wristbandService: WristbandsService,
   ) {}
   async create(createReceiptDto: CreateReceiptDto) {
     const customer = await this.CustomerRepository.findOneBy({
@@ -45,9 +43,11 @@ export class ReceiptsService {
     const event = await this.EventRepository.findOneBy({
       id: createReceiptDto.eventId,
     });
-    const packages = await this.PackageRepository.findOneBy({
-      id: createReceiptDto.packageId,
+    const packages = await this.PackageRepository.findOne({
+      where: { id: createReceiptDto.packageId },
+      relations: ['package_detail'],
     });
+
     const receipt: Receipt = new Receipt();
     receipt.qty = 0;
     receipt.totalPrice = 0;
@@ -55,7 +55,7 @@ export class ReceiptsService {
     receipt.nameComp = createReceiptDto.nameComp;
     receipt.received = createReceiptDto.received;
     receipt.payments = createReceiptDto.payments;
-    receipt.startDare = createReceiptDto.startDare;
+    receipt.startDate = createReceiptDto.startDate;
     receipt.expDate = createReceiptDto.expDate;
     receipt.customer = customer;
     receipt.promotion = promotion;
@@ -90,7 +90,7 @@ export class ReceiptsService {
       });
 
       if (ticket) {
-        console.log('found ticket');
+        // console.log('found ticket');
         const order = new Order();
         order.name = orderItem.name;
         order.type = orderItem.type;
@@ -105,10 +105,44 @@ export class ReceiptsService {
         receipt.qty = receipt.qty + order.qty; //บวกจำนวนทั้งหมดของ order
         receipt.totalPrice = receipt.totalPrice + order.totalPrice; //บวกราคาทั้งหมดของ order
         receipt.netPrice = receipt.totalPrice - receipt.promotion.discount;
-        receipt.startDare = order.startDate;
+        receipt.startDate = order.startDate;
         receipt.expDate = order.endDate;
+
+        for (let i = 0; i < order.qty; i++) {
+          const wristband = new Wristband();
+          wristband.type = order.name;
+          wristband.startDate = order.startDate;
+          wristband.endDate = order.endDate;
+          wristband.receipt = receipt;
+          await this.WristbandRepository.save(wristband);
+        }
       }
     }
+    if (receipt.event != null) {
+      for (let i = 0; i < receipt.qty; i++) {
+        const wristband = new Wristband();
+        wristband.type = 'อีเว้นท์';
+        wristband.startDate = receipt.startDate;
+        wristband.endDate = receipt.expDate;
+        wristband.receipt = receipt;
+        await this.WristbandRepository.save(wristband);
+      }
+    }
+    if (receipt.package != null) {
+      console.log(packages.package_detail);
+      for (const pk of packages.package_detail) {
+        for (let i = 0; i < pk.qty; i++) {
+          const wristband = new Wristband();
+          wristband.type = pk.name;
+          console.log(pk.name);
+          wristband.startDate = receipt.startDate;
+          wristband.endDate = receipt.expDate;
+          wristband.receipt = receipt;
+          await this.WristbandRepository.save(wristband);
+        }
+      }
+    }
+
     await this.ReceiptRepository.save(receipt);
     return await this.ReceiptRepository.findOne({
       where: { id: receipt.id },
@@ -126,6 +160,7 @@ export class ReceiptsService {
         'package.package_detail',
         'order',
         'order.ticket',
+        'wristband',
       ],
     });
   }
@@ -141,6 +176,7 @@ export class ReceiptsService {
         'package.package_detail',
         'order',
         'order.ticket',
+        'wristband',
       ],
     });
     if (!Receipt) {

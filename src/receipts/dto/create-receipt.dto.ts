@@ -35,7 +35,7 @@ export class CreateReceiptDto {
   payments: string;
 
   @IsNotEmpty()
-  startDare: Date;
+  startDate: Date;
 
   @IsNotEmpty()
   expDate: Date;
@@ -55,6 +55,6 @@ export class CreateReceiptDto {
   @IsNotEmpty()
   order: Order[];
 
-  //   @IsNotEmpty()
-  //   wristband: Wristband[];
+  // @IsNotEmpty()
+  // wristband: Wristband[];
 }

@@ -25,18 +25,17 @@ export class WristbandsService {
     private reviewRepository: Repository<Review>,
   ) {}
   async create(createWristbandDto: CreateWristbandDto) {
-    const receipt = await this.receiptRepository.findOne({
-      where: { id: createWristbandDto.receiptId },
-      relations: [
-        'event',
-        'package',
-        'package.package_detail',
-        'order',
-        'order.ticket',
-      ], // ดึงข้อมูลมาจาก receipt
-    });
-
-    const wristband = new Wristband();
+    // const receipt = await this.receiptRepository.findOne({
+    //   where: { id: createWristbandDto.receiptId },
+    //   relations: [
+    //     'event',
+    //     'package',
+    //     'package.package_detail',
+    //     'order',
+    //     'order.ticket',
+    //   ], // ดึงข้อมูลมาจาก receipt
+    // });
+    // const wristband = new Wristband();
     // if (receipt.event != null) {
     //   wristband.type = 'Event';
     // }
@@ -52,53 +51,49 @@ export class WristbandsService {
     // );
     // console.log('order', receipt.order[receipt.id].ticket.type);
     // console.log('Type', wristband.type);
-    wristband.type = createWristbandDto.type;
-    wristband.startDate = receipt.startDare;
-    wristband.endDate = receipt.expDate;
-    wristband.receipt = receipt;
-
-    await this.wristbandRepository.save(wristband);
-
-    for (const detail of createWristbandDto.wristband_detail) {
-      const playground = await this.playgroundRepository.findOne({
-        where: { name: detail.namePlay },
-        relations: ['wristband_detail'],
-      });
-      if (playground) {
-        // console.log('found ticket');
-        const wristband_detail = new WristbandDetail();
-        wristband_detail.namePlay = detail.namePlay;
-        wristband_detail.sum = detail.sum;
-        wristband_detail.wristband = wristband;
-        wristband_detail.playground = playground;
-
-        await this.wristbandDtRepository.save(wristband_detail);
-      }
-    }
-    await this.wristbandRepository.save(wristband);
-
-    for (const re of createWristbandDto.review) {
-      const playground = await this.playgroundRepository.findOne({
-        where: { name: re.name },
-        relations: ['review'],
-      });
-      if (playground) {
-        // console.log('found ticket');
-        const review = new Review();
-        review.name = re.name;
-        review.rate = re.rate;
-        review.text = re.text;
-        review.wristband = wristband;
-        review.playground = playground;
-        await this.reviewRepository.save(review);
-      }
-    }
-
-    await this.wristbandRepository.save(wristband);
-    return await this.wristbandRepository.findOne({
-      where: { id: wristband.id },
-      relations: ['wristband_detail', 'review'],
-    });
+    // wristband.type = createWristbandDto.type;
+    // wristband.startDate = receipt.startDare;
+    // wristband.endDate = receipt.expDate;
+    // wristband.receipt = receipt;
+    // await this.wristbandRepository.save(wristband);
+    // for (const detail of createWristbandDto.wristband_detail) {
+    //   const playground = await this.playgroundRepository.findOne({
+    //     where: { name: detail.namePlay },
+    //     relations: ['wristband_detail'],
+    //   });
+    //   if (playground) {
+    // console.log('found ticket');
+    //     const wristband_detail = new WristbandDetail();
+    //     wristband_detail.namePlay = detail.namePlay;
+    //     wristband_detail.sum = detail.sum;
+    //     wristband_detail.wristband = wristband;
+    //     wristband_detail.playground = playground;
+    //     await this.wristbandDtRepository.save(wristband_detail);
+    //   }
+    // }
+    // await this.wristbandRepository.save(wristband);
+    // for (const re of createWristbandDto.review) {
+    //   const playground = await this.playgroundRepository.findOne({
+    //     where: { name: re.name },
+    //     relations: ['review'],
+    //   });
+    //   if (playground) {
+    // console.log('found ticket');
+    //     const review = new Review();
+    //     review.name = re.name;
+    //     review.rate = re.rate;
+    //     review.text = re.text;
+    //     review.wristband = wristband;
+    //     review.playground = playground;
+    //     await this.reviewRepository.save(review);
+    //   }
+    // }
+    // await this.wristbandRepository.save(wristband);
+    // return await this.wristbandRepository.findOne({
+    //   where: { id: wristband.id },
+    //   relations: ['wristband_detail', 'review'],
+    // });
+    return this.wristbandRepository.save(createWristbandDto);
   }
 
   findAll() {
@@ -164,7 +159,7 @@ export class WristbandsService {
         if (receipt.package != null) {
           wristband.type = 'Package';
         }
-        wristband.startDate = receipt.startDare;
+        wristband.startDate = receipt.startDate;
         wristband.endDate = receipt.expDate;
         wristband.receipt = receipt;
         wristbands.push(wristband);
@@ -181,7 +176,7 @@ export class WristbandsService {
         if (receipt.package != null) {
           wristband.type = 'Package';
         }
-        wristband.startDate = receipt.startDare;
+        wristband.startDate = receipt.startDate;
         wristband.endDate = receipt.expDate;
         wristband.receipt = receipt;
         wristbands.push(wristband);

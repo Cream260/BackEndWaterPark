@@ -45,7 +45,7 @@ export class Receipt {
   payments: string;
 
   @Column({ name: 'rec_startDate' })
-  startDare: Date;
+  startDate: Date;
 
   @Column({ name: 'rec_expirationDate' })
   expDate: Date;
