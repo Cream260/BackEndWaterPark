@@ -5,7 +5,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Event } from './entities/event.entity';
 import { Receipt } from '../receipts/entities/receipt.entity';
 
-
 @Module({
   imports: [TypeOrmModule.forFeature([Event, Receipt])],
   controllers: [EventController],

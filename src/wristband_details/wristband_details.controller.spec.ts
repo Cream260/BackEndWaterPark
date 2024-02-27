@@ -11,7 +11,9 @@ describe('WristbandDetailsController', () => {
       providers: [WristbandDetailsService],
     }).compile();
 
-    controller = module.get<WristbandDetailsController>(WristbandDetailsController);
+    controller = module.get<WristbandDetailsController>(
+      WristbandDetailsController,
+    );
   });
 
   it('should be defined', () => {

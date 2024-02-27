@@ -17,11 +17,9 @@ export class Event {
   @Column({ length: '50', name: 'event_name' })
   name: string;
 
-
   @Column({ type: 'float', name: 'event_price' })
   price: number;
 
-  
   @Column({ length: '50', name: 'event_type' })
   type: string;
 

@@ -18,6 +18,9 @@ export class Order {
   @Column({ length: '50', name: 'order_name' })
   name: string;
 
+  @Column({ name: 'order_type' })
+  type: string;
+
   @Column({ type: 'float', name: 'order_price' })
   price: number;
 

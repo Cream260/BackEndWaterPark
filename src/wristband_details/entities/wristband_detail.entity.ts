@@ -4,21 +4,23 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Wristband } from '../../wristbands/entities/wristband.entity';
-
+import { Playground } from '../../playgrounds/entities/playground.entity';
 
 @Entity()
 export class WristbandDetail {
   @PrimaryGeneratedColumn({ name: 'wbdt_id' })
   id: number;
 
+  @Column({ name: 'wbdt_name' })
+  namePlay: string;
+
   @Column({ name: 'wbdt_sum' })
   sum: number;
-  
+
   @CreateDateColumn()
   createdDate: Date;
 
@@ -27,11 +29,10 @@ export class WristbandDetail {
 
   @DeleteDateColumn()
   deletedDate: Date;
-  
-  @ManyToOne(() => Wristband, (wristband) => wristband.wristbandDetail)
+
+  @ManyToOne(() => Wristband, (wristband) => wristband.wristband_detail)
   wristband: Wristband;
 
-  // @OneToMany(() => PlayGround, (playGround) => playGround.wristbandDetail)
-  // playGround: PlayFround[];
+  @ManyToOne(() => Playground, (playground) => playground.wristband_detail)
+  playground: Playground;
 }
-

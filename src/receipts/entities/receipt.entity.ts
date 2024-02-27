@@ -44,6 +44,12 @@ export class Receipt {
   @Column({ name: 'payment' })
   payments: string;
 
+  @Column({ name: 'rec_startDate' })
+  startDare: Date;
+
+  @Column({ name: 'rec_expirationDate' })
+  expDate: Date;
+
   @CreateDateColumn()
   createdDate: Date;
 

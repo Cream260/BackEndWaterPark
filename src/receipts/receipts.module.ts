@@ -9,6 +9,11 @@ import { Order } from '../orders/entities/order.entity';
 import { Ticket } from '../ticket/entities/ticket.entity';
 import { Package } from '../package/entities/package.entity';
 import { Event } from '../event/entities/event.entity';
+import { Wristband } from '../wristbands/entities/wristband.entity';
+import { WristbandsService } from '../wristbands/wristbands.service';
+import { WristbandDetail } from '../wristband_details/entities/wristband_detail.entity';
+import { Playground } from '../playgrounds/entities/playground.entity';
+import { Review } from '../reviews/entities/review.entity';
 
 @Module({
   imports: [
@@ -20,9 +25,13 @@ import { Event } from '../event/entities/event.entity';
       Ticket,
       Package,
       Event,
+      Wristband,
+      WristbandDetail,
+      Playground,
+      Review,
     ]),
   ],
   controllers: [ReceiptsController],
-  providers: [ReceiptsService],
+  providers: [ReceiptsService, WristbandsService],
 })
 export class ReceiptsModule {}

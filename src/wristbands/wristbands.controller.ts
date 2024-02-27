@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { WristbandsService } from './wristbands.service';
 import { CreateWristbandDto } from './dto/create-wristband.dto';
 import { UpdateWristbandDto } from './dto/update-wristband.dto';
@@ -23,7 +31,10 @@ export class WristbandsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateWristbandDto: UpdateWristbandDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateWristbandDto: UpdateWristbandDto,
+  ) {
     return this.wristbandsService.update(+id, updateWristbandDto);
   }
 

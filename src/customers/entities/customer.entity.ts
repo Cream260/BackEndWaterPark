@@ -14,6 +14,12 @@ export class Customer {
   @PrimaryGeneratedColumn({ name: 'cus_id' })
   id: number;
 
+  @Column({ name: 'cus_username', unique: true })
+  username: string;
+
+  @Column({ name: 'cus_password' })
+  password: string;
+
   @Column({ length: '50', name: 'cus_name' })
   name: string;
 

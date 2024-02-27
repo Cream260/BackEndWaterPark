@@ -6,6 +6,9 @@ export class CreateOrderDto {
   name: string;
 
   @IsNotEmpty()
+  type: string;
+
+  @IsNotEmpty()
   @Min(0)
   price: number;
 
