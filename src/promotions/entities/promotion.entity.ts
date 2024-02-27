@@ -29,6 +29,9 @@ export class Promotion {
   @Column({ type: 'float', name: 'promo_discount' })
   discount: number;
 
+  @Column({ name: 'promo_image' })
+  images: string;
+
   @CreateDateColumn()
   createdDate: Date;
 

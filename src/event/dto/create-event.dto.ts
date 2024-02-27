@@ -11,4 +11,7 @@ export class CreateEventDto {
   @IsNotEmpty()
   @Length(3, 50)
   type: string;
+
+  @IsNotEmpty()
+  images: string;
 }

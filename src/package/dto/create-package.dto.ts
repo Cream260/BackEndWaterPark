@@ -14,5 +14,9 @@ export class CreatePackageDto {
   qty: number;
 
   @IsNotEmpty()
+  images: string;
+
+  @IsNotEmpty()
   package_detail: PackageDetail[];
+
 }

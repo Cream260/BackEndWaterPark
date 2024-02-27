@@ -17,4 +17,7 @@ export class CreatePromotionDto {
   @IsNotEmpty()
   @Min(1)
   discount: number;
+
+  @IsNotEmpty()
+  images: string;
 }

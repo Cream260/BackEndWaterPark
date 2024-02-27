@@ -5,8 +5,6 @@ export class CreatePlaygroundDto {
   @Length(3, 50)
   name: string;
 
-  image = 'no_image.jpg';
-
   @IsNotEmpty()
   type: string;
 
@@ -21,4 +19,7 @@ export class CreatePlaygroundDto {
 
   @IsNotEmpty()
   condition: string;
+
+  @IsNotEmpty()
+  images: string;
 }

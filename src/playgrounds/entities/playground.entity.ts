@@ -17,11 +17,6 @@ export class Playground {
   @Column({ name: 'play_name' })
   name: string;
 
-  @Column({
-    length: '128',
-    default: 'no_image.jpg',
-  })
-  image: string;
 
   @Column({ name: 'play_type' })
   type: string;
@@ -37,6 +32,9 @@ export class Playground {
 
   @Column({ name: 'play_condition' })
   condition: string;
+
+  @Column({name: 'play_image'})
+  images: string;
 
   @CreateDateColumn()
   createdDate: Date;

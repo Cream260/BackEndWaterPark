@@ -56,6 +56,7 @@ export class ReceiptsService {
     receipt.received = createReceiptDto.received;
     receipt.payments = createReceiptDto.payments;
     receipt.startDate = createReceiptDto.startDate;
+  
     receipt.expDate = createReceiptDto.expDate;
     receipt.customer = customer;
     receipt.promotion = promotion;

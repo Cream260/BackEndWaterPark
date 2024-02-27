@@ -11,4 +11,7 @@ export class CreateTicketDto {
 
   @IsNotEmpty()
   type: string;
+
+  @IsNotEmpty()
+  images: string;
 }

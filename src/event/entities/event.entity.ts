@@ -23,6 +23,9 @@ export class Event {
   @Column({ length: '50', name: 'event_type' })
   type: string;
 
+  @Column({ length: '50', name: 'event_image' })
+  images: string;
+
   @CreateDateColumn()
   createdDate: Date;
 

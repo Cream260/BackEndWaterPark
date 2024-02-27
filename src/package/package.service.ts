@@ -21,6 +21,7 @@ export class PackageService {
     packages.name = createPackageDto.name;
     packages.price = createPackageDto.price;
     packages.qty = 0;
+    packages.images = createPackageDto.images;
 
     const packed = await this.packageRepository.save(packages);
 
