@@ -22,7 +22,7 @@ export class PackageService {
     packages.price = createPackageDto.price;
     packages.qty = 0;
 
-    await this.packageRepository.save(packages);
+    const packed = await this.packageRepository.save(packages);
 
     for (const detail of createPackageDto.package_detail) {
       const whereClause: any = { name: detail.name };
@@ -33,21 +33,22 @@ export class PackageService {
         where: whereClause,
         relations: ['package_detail'],
       });
+      
       if (ticket) {
-        // console.log('found ticket');
         const package_detail = new PackageDetail();
         package_detail.name = detail.name;
         package_detail.type = detail.type;
         package_detail.qty = detail.qty;
         package_detail.package = packages;
         package_detail.ticket = ticket;
+        package_detail.package = packed;
         await this.packageDtRepository.save(package_detail);
-        packages.qty = packages.qty + package_detail.qty;
+        packed.qty = packages.qty + package_detail.qty;
       }
     }
-    await this.packageRepository.save(packages);
+    await this.packageRepository.save(packed);
     return await this.packageRepository.findOne({
-      where: { id: packages.id },
+      where: { id: packed.id },
       relations: ['package_detail'],
     });
   }
