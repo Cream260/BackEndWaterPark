@@ -28,6 +28,8 @@ export class WristbandDetailsService {
     const wristband_detail = new WristbandDetail();
     wristband_detail.namePlay = CreateWristbandDetailDto.namePlay;
     wristband_detail.sum = CreateWristbandDetailDto.sum;
+    wristband_detail.rate = CreateWristbandDetailDto.rate;
+    wristband_detail.review = CreateWristbandDetailDto.review;
     wristband_detail.wristband = wristband;
     wristband_detail.playground = playground;
     return this.wristbandDetailRepository.save(wristband_detail);

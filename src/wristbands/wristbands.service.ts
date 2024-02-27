@@ -8,8 +8,6 @@ import { Repository } from 'typeorm';
 import { Receipt } from '../receipts/entities/receipt.entity';
 import { Playground } from '../playgrounds/entities/playground.entity';
 import { WristbandDetail } from '../wristband_details/entities/wristband_detail.entity';
-import { Review } from '../reviews/entities/review.entity';
-
 @Injectable()
 export class WristbandsService {
   constructor(
@@ -21,8 +19,6 @@ export class WristbandsService {
     private receiptRepository: Repository<Receipt>,
     @InjectRepository(Playground)
     private playgroundRepository: Repository<Playground>,
-    @InjectRepository(Review)
-    private reviewRepository: Repository<Review>,
   ) {}
   async create(createWristbandDto: CreateWristbandDto) {
     // const receipt = await this.receiptRepository.findOne({
@@ -72,6 +68,34 @@ export class WristbandsService {
     //   }
     // }
     // await this.wristbandRepository.save(wristband);
+    // wristband.type = createWristbandDto.type;
+    // wristband.startDate = receipt.startDate;
+    // wristband.endDate = receipt.expDate;
+    // wristband.receipt = receipt;
+
+    // await this.wristbandRepository.save(wristband);
+
+    // for (const detail of createWristbandDto.wristband_detail) {
+    //   const playground = await this.playgroundRepository.findOne({
+    //     where: { name: detail.namePlay },
+    //     relations: ['wristband_detail'],
+    //   });
+    //   if (playground) {
+    // console.log('found ticket');
+    //     const wristband_detail = new WristbandDetail();
+    //     wristband_detail.namePlay = detail.namePlay;
+    //     wristband_detail.sum = detail.sum;
+    //     wristband_detail.rate = detail.rate;
+    //     wristband_detail.review = detail.review;
+    //     wristband_detail.wristband = wristband;
+    //     wristband_detail.wristband = wristband;
+    //     wristband_detail.playground = playground;
+
+    //     await this.wristbandDtRepository.save(wristband_detail);
+    //   }
+    // }
+    // await this.wristbandRepository.save(wristband);
+
     // for (const re of createWristbandDto.review) {
     //   const playground = await this.playgroundRepository.findOne({
     //     where: { name: re.name },
@@ -93,31 +117,25 @@ export class WristbandsService {
     //   where: { id: wristband.id },
     //   relations: ['wristband_detail', 'review'],
     // });
-    return this.wristbandRepository.save(createWristbandDto);
+    // return this.wristbandRepository.save(createWristbandDto);
+
+    await this.wristbandRepository.save(createWristbandDto);
+    // return await this.wristbandRepository.findOne({
+    //   where: { id: wristband.id },
+    //   relations: ['wristband_detail'],
+    // });
   }
 
   findAll() {
     return this.wristbandRepository.find({
-      relations: [
-        'receipt',
-        'wristband_detail',
-        'wristband_detail.playground',
-        'review',
-        'review.playground',
-      ],
+      relations: ['receipt', 'wristband_detail', 'wristband_detail.playground'],
     });
   }
 
   async findOne(id: number) {
     const Order = await this.wristbandRepository.findOne({
       where: { id: id },
-      relations: [
-        'receipt',
-        'wristband_detail',
-        'wristband_detail.playground',
-        'review',
-        'review.playground',
-      ],
+      relations: ['receipt', 'wristband_detail', 'wristband_detail.playground'],
     });
     if (!Order) {
       throw new NotFoundException('Wristband not found');
