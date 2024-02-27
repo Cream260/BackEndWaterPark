@@ -9,12 +9,7 @@ import { Playground } from '../playgrounds/entities/playground.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      Wristband,
-      Receipt,
-      WristbandDetail,
-      Playground,
-    ]),
+    TypeOrmModule.forFeature([Wristband, Receipt, WristbandDetail, Playground]),
   ],
   controllers: [WristbandsController],
   providers: [WristbandsService],

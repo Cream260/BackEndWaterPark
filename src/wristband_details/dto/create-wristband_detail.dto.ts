@@ -10,7 +10,7 @@ export class CreateWristbandDetailDto {
   @IsNotEmpty()
   @Min(1)
   rate: number;
-  
+
   @IsNotEmpty()
   review: string;
 

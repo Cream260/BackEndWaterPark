@@ -16,5 +16,4 @@ export class CreateWristbandDto {
 
   @IsNotEmpty()
   wristband_detail: WristbandDetail[];
-
 }

@@ -34,7 +34,7 @@ export class PackageService {
         where: whereClause,
         relations: ['package_detail'],
       });
-      
+
       if (ticket) {
         const package_detail = new PackageDetail();
         package_detail.name = detail.name;

@@ -55,6 +55,6 @@ export class CreateReceiptDto {
   @IsNotEmpty()
   order: Order[];
 
-  //   @IsNotEmpty()
-  //   wristband: Wristband[];
+  // @IsNotEmpty()
+  // wristband: Wristband[];
 }

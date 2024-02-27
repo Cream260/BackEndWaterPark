@@ -21,18 +21,17 @@ export class WristbandsService {
     private playgroundRepository: Repository<Playground>,
   ) {}
   async create(createWristbandDto: CreateWristbandDto) {
-    const receipt = await this.receiptRepository.findOne({
-      where: { id: createWristbandDto.receiptId },
-      relations: [
-        'event',
-        'package',
-        'package.package_detail',
-        'order',
-        'order.ticket',
-      ], // ดึงข้อมูลมาจาก receipt
-    });
-
-    const wristband = new Wristband();
+    // const receipt = await this.receiptRepository.findOne({
+    //   where: { id: createWristbandDto.receiptId },
+    //   relations: [
+    //     'event',
+    //     'package',
+    //     'package.package_detail',
+    //     'order',
+    //     'order.ticket',
+    //   ], // ดึงข้อมูลมาจาก receipt
+    // });
+    // const wristband = new Wristband();
     // if (receipt.event != null) {
     //   wristband.type = 'Event';
     // }
@@ -48,33 +47,54 @@ export class WristbandsService {
     // );
     // console.log('order', receipt.order[receipt.id].ticket.type);
     // console.log('Type', wristband.type);
-    wristband.type = createWristbandDto.type;
-    wristband.startDate = receipt.startDate;
-    wristband.endDate = receipt.expDate;
-    wristband.receipt = receipt;
+    // wristband.type = createWristbandDto.type;
+    // wristband.startDate = receipt.startDare;
+    // wristband.endDate = receipt.expDate;
+    // wristband.receipt = receipt;
+    // await this.wristbandRepository.save(wristband);
+    // for (const detail of createWristbandDto.wristband_detail) {
+    //   const playground = await this.playgroundRepository.findOne({
+    //     where: { name: detail.namePlay },
+    //     relations: ['wristband_detail'],
+    //   });
+    //   if (playground) {
+    // console.log('found ticket');
+    //     const wristband_detail = new WristbandDetail();
+    //     wristband_detail.namePlay = detail.namePlay;
+    //     wristband_detail.sum = detail.sum;
+    //     wristband_detail.wristband = wristband;
+    //     wristband_detail.playground = playground;
+    //     await this.wristbandDtRepository.save(wristband_detail);
+    //   }
+    // }
+    // await this.wristbandRepository.save(wristband);
+    // wristband.type = createWristbandDto.type;
+    // wristband.startDate = receipt.startDate;
+    // wristband.endDate = receipt.expDate;
+    // wristband.receipt = receipt;
 
-    await this.wristbandRepository.save(wristband);
+    // await this.wristbandRepository.save(wristband);
 
-    for (const detail of createWristbandDto.wristband_detail) {
-      const playground = await this.playgroundRepository.findOne({
-        where: { name: detail.namePlay },
-        relations: ['wristband_detail'],
-      });
-      if (playground) {
-        // console.log('found ticket');
-        const wristband_detail = new WristbandDetail();
-        wristband_detail.namePlay = detail.namePlay;
-        wristband_detail.sum = detail.sum;
-        wristband_detail.rate = detail.rate;
-        wristband_detail.review = detail.review;
-        wristband_detail.wristband = wristband;
-        wristband_detail.wristband = wristband;
-        wristband_detail.playground = playground;
+    // for (const detail of createWristbandDto.wristband_detail) {
+    //   const playground = await this.playgroundRepository.findOne({
+    //     where: { name: detail.namePlay },
+    //     relations: ['wristband_detail'],
+    //   });
+    //   if (playground) {
+    // console.log('found ticket');
+    //     const wristband_detail = new WristbandDetail();
+    //     wristband_detail.namePlay = detail.namePlay;
+    //     wristband_detail.sum = detail.sum;
+    //     wristband_detail.rate = detail.rate;
+    //     wristband_detail.review = detail.review;
+    //     wristband_detail.wristband = wristband;
+    //     wristband_detail.wristband = wristband;
+    //     wristband_detail.playground = playground;
 
-        await this.wristbandDtRepository.save(wristband_detail);
-      }
-    }
-    await this.wristbandRepository.save(wristband);
+    //     await this.wristbandDtRepository.save(wristband_detail);
+    //   }
+    // }
+    // await this.wristbandRepository.save(wristband);
 
     // for (const re of createWristbandDto.review) {
     //   const playground = await this.playgroundRepository.findOne({
@@ -82,7 +102,7 @@ export class WristbandsService {
     //     relations: ['review'],
     //   });
     //   if (playground) {
-    //     // console.log('found ticket');
+    // console.log('found ticket');
     //     const review = new Review();
     //     review.name = re.name;
     //     review.rate = re.rate;
@@ -92,32 +112,30 @@ export class WristbandsService {
     //     await this.reviewRepository.save(review);
     //   }
     // }
+    // await this.wristbandRepository.save(wristband);
+    // return await this.wristbandRepository.findOne({
+    //   where: { id: wristband.id },
+    //   relations: ['wristband_detail', 'review'],
+    // });
+    // return this.wristbandRepository.save(createWristbandDto);
 
-    await this.wristbandRepository.save(wristband);
-    return await this.wristbandRepository.findOne({
-      where: { id: wristband.id },
-      relations: ['wristband_detail'],
-    });
+    await this.wristbandRepository.save(createWristbandDto);
+    // return await this.wristbandRepository.findOne({
+    //   where: { id: wristband.id },
+    //   relations: ['wristband_detail'],
+    // });
   }
 
   findAll() {
     return this.wristbandRepository.find({
-      relations: [
-        'receipt',
-        'wristband_detail',
-        'wristband_detail.playground',
-      ],
+      relations: ['receipt', 'wristband_detail', 'wristband_detail.playground'],
     });
   }
 
   async findOne(id: number) {
     const Order = await this.wristbandRepository.findOne({
       where: { id: id },
-      relations: [
-        'receipt',
-        'wristband_detail',
-        'wristband_detail.playground',
-      ],
+      relations: ['receipt', 'wristband_detail', 'wristband_detail.playground'],
     });
     if (!Order) {
       throw new NotFoundException('Wristband not found');
