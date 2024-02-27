@@ -7,7 +7,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Review } from '../../reviews/entities/review.entity';
 import { WristbandDetail } from '../../wristband_details/entities/wristband_detail.entity';
 
 @Entity()
@@ -47,9 +46,6 @@ export class Playground {
 
   @DeleteDateColumn()
   deletedDate: Date;
-
-  @OneToMany(() => Review, (review) => review.playground)
-  review: Review[];
 
   @OneToMany(
     () => WristbandDetail,

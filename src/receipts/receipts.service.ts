@@ -55,7 +55,7 @@ export class ReceiptsService {
     receipt.nameComp = createReceiptDto.nameComp;
     receipt.received = createReceiptDto.received;
     receipt.payments = createReceiptDto.payments;
-    receipt.startDare = createReceiptDto.startDare;
+    receipt.startDate = createReceiptDto.startDate;
     receipt.expDate = createReceiptDto.expDate;
     receipt.customer = customer;
     receipt.promotion = promotion;
@@ -105,7 +105,7 @@ export class ReceiptsService {
         receipt.qty = receipt.qty + order.qty; //บวกจำนวนทั้งหมดของ order
         receipt.totalPrice = receipt.totalPrice + order.totalPrice; //บวกราคาทั้งหมดของ order
         receipt.netPrice = receipt.totalPrice - receipt.promotion.discount;
-        receipt.startDare = order.startDate;
+        receipt.startDate = order.startDate;
         receipt.expDate = order.endDate;
       }
     }

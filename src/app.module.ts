@@ -16,10 +16,8 @@ import { OrdersModule } from './orders/orders.module';
 import { Order } from './orders/entities/order.entity';
 import { ReceiptsModule } from './receipts/receipts.module';
 import { Receipt } from './receipts/entities/receipt.entity';
-import { ReviewsModule } from './reviews/reviews.module';
 import { PlaygroundsModule } from './playgrounds/playgrounds.module';
 import { Playground } from './playgrounds/entities/playground.entity';
-import { Review } from './reviews/entities/review.entity';
 import { WristbandsModule } from './wristbands/wristbands.module';
 import { Wristband } from './wristbands/entities/wristband.entity';
 import { WristbandDetailsModule } from './wristband_details/wristband_details.module';
@@ -38,7 +36,6 @@ import { PackageDetail } from './package_details/entities/package_detail.entity'
     WristbandDetailsModule,
     OrdersModule,
     ReceiptsModule,
-    ReviewsModule,
     PlaygroundsModule,
     PackageDetailsModule,
     TypeOrmModule.forRoot({
@@ -57,7 +54,6 @@ import { PackageDetail } from './package_details/entities/package_detail.entity'
         Order,
         Receipt,
         Playground,
-        Review,
         Wristband,
         WristbandDetail,
         PackageDetail,

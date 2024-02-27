@@ -8,8 +8,6 @@ import { Repository } from 'typeorm';
 import { Receipt } from '../receipts/entities/receipt.entity';
 import { Playground } from '../playgrounds/entities/playground.entity';
 import { WristbandDetail } from '../wristband_details/entities/wristband_detail.entity';
-import { Review } from '../reviews/entities/review.entity';
-
 @Injectable()
 export class WristbandsService {
   constructor(
@@ -21,8 +19,6 @@ export class WristbandsService {
     private receiptRepository: Repository<Receipt>,
     @InjectRepository(Playground)
     private playgroundRepository: Repository<Playground>,
-    @InjectRepository(Review)
-    private reviewRepository: Repository<Review>,
   ) {}
   async create(createWristbandDto: CreateWristbandDto) {
     const receipt = await this.receiptRepository.findOne({
@@ -53,7 +49,7 @@ export class WristbandsService {
     // console.log('order', receipt.order[receipt.id].ticket.type);
     // console.log('Type', wristband.type);
     wristband.type = createWristbandDto.type;
-    wristband.startDate = receipt.startDare;
+    wristband.startDate = receipt.startDate;
     wristband.endDate = receipt.expDate;
     wristband.receipt = receipt;
 
@@ -69,6 +65,9 @@ export class WristbandsService {
         const wristband_detail = new WristbandDetail();
         wristband_detail.namePlay = detail.namePlay;
         wristband_detail.sum = detail.sum;
+        wristband_detail.rate = detail.rate;
+        wristband_detail.review = detail.review;
+        wristband_detail.wristband = wristband;
         wristband_detail.wristband = wristband;
         wristband_detail.playground = playground;
 
@@ -77,27 +76,27 @@ export class WristbandsService {
     }
     await this.wristbandRepository.save(wristband);
 
-    for (const re of createWristbandDto.review) {
-      const playground = await this.playgroundRepository.findOne({
-        where: { name: re.name },
-        relations: ['review'],
-      });
-      if (playground) {
-        // console.log('found ticket');
-        const review = new Review();
-        review.name = re.name;
-        review.rate = re.rate;
-        review.text = re.text;
-        review.wristband = wristband;
-        review.playground = playground;
-        await this.reviewRepository.save(review);
-      }
-    }
+    // for (const re of createWristbandDto.review) {
+    //   const playground = await this.playgroundRepository.findOne({
+    //     where: { name: re.name },
+    //     relations: ['review'],
+    //   });
+    //   if (playground) {
+    //     // console.log('found ticket');
+    //     const review = new Review();
+    //     review.name = re.name;
+    //     review.rate = re.rate;
+    //     review.text = re.text;
+    //     review.wristband = wristband;
+    //     review.playground = playground;
+    //     await this.reviewRepository.save(review);
+    //   }
+    // }
 
     await this.wristbandRepository.save(wristband);
     return await this.wristbandRepository.findOne({
       where: { id: wristband.id },
-      relations: ['wristband_detail', 'review'],
+      relations: ['wristband_detail'],
     });
   }
 
@@ -107,8 +106,6 @@ export class WristbandsService {
         'receipt',
         'wristband_detail',
         'wristband_detail.playground',
-        'review',
-        'review.playground',
       ],
     });
   }
@@ -120,8 +117,6 @@ export class WristbandsService {
         'receipt',
         'wristband_detail',
         'wristband_detail.playground',
-        'review',
-        'review.playground',
       ],
     });
     if (!Order) {
@@ -164,7 +159,7 @@ export class WristbandsService {
         if (receipt.package != null) {
           wristband.type = 'Package';
         }
-        wristband.startDate = receipt.startDare;
+        wristband.startDate = receipt.startDate;
         wristband.endDate = receipt.expDate;
         wristband.receipt = receipt;
         wristbands.push(wristband);
@@ -181,7 +176,7 @@ export class WristbandsService {
         if (receipt.package != null) {
           wristband.type = 'Package';
         }
-        wristband.startDate = receipt.startDare;
+        wristband.startDate = receipt.startDate;
         wristband.endDate = receipt.expDate;
         wristband.receipt = receipt;
         wristbands.push(wristband);

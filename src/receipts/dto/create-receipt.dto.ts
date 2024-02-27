@@ -35,7 +35,7 @@ export class CreateReceiptDto {
   payments: string;
 
   @IsNotEmpty()
-  startDare: Date;
+  startDate: Date;
 
   @IsNotEmpty()
   expDate: Date;

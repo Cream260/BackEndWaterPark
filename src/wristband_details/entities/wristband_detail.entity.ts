@@ -21,6 +21,12 @@ export class WristbandDetail {
   @Column({ name: 'wbdt_sum' })
   sum: number;
 
+  @Column({ name: 'wbdt_rate' })
+  rate: number;
+
+  @Column({ name: 'wbdt_review' })
+  review: string;
+
   @CreateDateColumn()
   createdDate: Date;
 
