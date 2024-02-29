@@ -24,6 +24,9 @@ export class Ticket {
   @Column({ name: 'ticket_type' })
   type: string;
 
+  @Column({ name: 'ticket_images' })
+  images: string;
+
   @CreateDateColumn()
   createdDate: Date;
 
