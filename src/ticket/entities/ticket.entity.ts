@@ -7,8 +7,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Order } from '../../orders/entities/order.entity';
 import { PackageDetail } from '../../package_details/entities/package_detail.entity';
+import { OrderItem } from '../../orders/entities/order-item';
 
 @Entity()
 export class Ticket {
@@ -36,8 +36,8 @@ export class Ticket {
   @DeleteDateColumn()
   deletedDate: Date;
 
-  @OneToMany(() => Order, (order) => order.ticket)
-  order: Order[];
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.ticket)
+  orderItems: OrderItem[];
 
   @OneToMany(() => PackageDetail, (package_detail) => package_detail.ticket)
   package_detail: PackageDetail[];

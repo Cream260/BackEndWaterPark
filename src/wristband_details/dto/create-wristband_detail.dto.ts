@@ -1,4 +1,4 @@
-import { IsNotEmpty, Length, Min } from 'class-validator';
+import { IsNotEmpty, Min } from 'class-validator';
 export class CreateWristbandDetailDto {
   @IsNotEmpty()
   namePlay: string;

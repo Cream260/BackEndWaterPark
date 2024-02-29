@@ -12,7 +12,7 @@ export class CreateWristbandDto {
   endDate: Date;
 
   @IsNotEmpty()
-  receiptId: number;
+  orderId: number;
 
   @IsNotEmpty()
   wristband_detail: WristbandDetail[];

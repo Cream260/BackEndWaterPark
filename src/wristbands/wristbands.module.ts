@@ -3,15 +3,13 @@ import { WristbandsService } from './wristbands.service';
 import { WristbandsController } from './wristbands.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Wristband } from './entities/wristband.entity';
-import { Receipt } from '../receipts/entities/receipt.entity';
 import { WristbandDetail } from '../wristband_details/entities/wristband_detail.entity';
 import { Playground } from '../playgrounds/entities/playground.entity';
+import { QrService } from '../qr.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Wristband, Receipt, WristbandDetail, Playground]),
-  ],
+  imports: [TypeOrmModule.forFeature([Wristband, WristbandDetail, Playground])],
   controllers: [WristbandsController],
-  providers: [WristbandsService],
+  providers: [WristbandsService, QrService],
 })
 export class WristbandsModule {}

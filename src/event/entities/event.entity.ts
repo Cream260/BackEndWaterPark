@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Receipt } from '../../receipts/entities/receipt.entity';
+import { Order } from '../../orders/entities/order.entity';
 
 @Entity()
 export class Event {
@@ -35,6 +35,6 @@ export class Event {
   @DeleteDateColumn()
   deletedDate: Date;
 
-  @OneToMany(() => Receipt, (receipt) => receipt.event)
-  receipt: Receipt[];
+  @OneToMany(() => Order, (order) => order.event)
+  orders: Order[];
 }

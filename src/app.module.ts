@@ -12,10 +12,7 @@ import { EventModule } from './event/event.module';
 import { PackageModule } from './package/package.module';
 import { TicketModule } from './ticket/ticket.module';
 import { CustomersModule } from './customers/customers.module';
-import { OrdersModule } from './orders/orders.module';
 import { Order } from './orders/entities/order.entity';
-import { ReceiptsModule } from './receipts/receipts.module';
-import { Receipt } from './receipts/entities/receipt.entity';
 import { PlaygroundsModule } from './playgrounds/playgrounds.module';
 import { Playground } from './playgrounds/entities/playground.entity';
 import { WristbandsModule } from './wristbands/wristbands.module';
@@ -24,6 +21,9 @@ import { WristbandDetailsModule } from './wristband_details/wristband_details.mo
 import { WristbandDetail } from './wristband_details/entities/wristband_detail.entity';
 import { PackageDetailsModule } from './package_details/package_details.module';
 import { PackageDetail } from './package_details/entities/package_detail.entity';
+import { QrService } from './qr.service';
+import { OrdersModule } from './orders/orders.module';
+import { OrderItem } from './orders/entities/order-item';
 
 @Module({
   imports: [
@@ -35,7 +35,6 @@ import { PackageDetail } from './package_details/entities/package_detail.entity'
     WristbandsModule,
     WristbandDetailsModule,
     OrdersModule,
-    ReceiptsModule,
     PlaygroundsModule,
     PackageDetailsModule,
     TypeOrmModule.forRoot({
@@ -52,16 +51,16 @@ import { PackageDetail } from './package_details/entities/package_detail.entity'
         Ticket,
         Customer,
         Order,
-        Receipt,
         Playground,
         Wristband,
         WristbandDetail,
         PackageDetail,
+        OrderItem,
       ],
       synchronize: true,
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, QrService],
 })
 export class AppModule {}
