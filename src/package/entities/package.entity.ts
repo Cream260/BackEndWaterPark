@@ -24,8 +24,8 @@ export class Package {
   @Column({ name: 'package_qty' })
   qty: number;
 
-  @Column({name: 'package_image'})
-  images:string;
+  @Column({ length: 500, name: 'package_image' })
+  images: string;
 
   @CreateDateColumn()
   createdDate: Date;

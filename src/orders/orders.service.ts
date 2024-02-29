@@ -43,8 +43,6 @@ export class OrdersService {
     order.price = createOrderDto.price;
     order.totalPrice = createOrderDto.totalPrice;
     order.qty = createOrderDto.qty;
-    order.startDate = createOrderDto.startDate;
-    order.endDate = createOrderDto.endDate;
     order.receipt = receipt;
     order.ticket = ticket;
     // order.receipt = customer;
