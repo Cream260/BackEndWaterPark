@@ -56,7 +56,6 @@ export class ReceiptsService {
     receipt.received = createReceiptDto.received;
     receipt.payments = createReceiptDto.payments;
     receipt.startDate = createReceiptDto.startDate;
-  
     receipt.expDate = createReceiptDto.expDate;
     receipt.customer = customer;
     receipt.promotion = promotion;
@@ -98,22 +97,18 @@ export class ReceiptsService {
         order.price = orderItem.price;
         order.totalPrice = orderItem.totalPrice;
         order.qty = orderItem.qty;
-        order.startDate = orderItem.startDate;
-        order.endDate = orderItem.endDate;
         order.ticket = ticket;
         order.receipt = receipt;
         await this.OrderRepository.save(order);
         receipt.qty = receipt.qty + order.qty; //บวกจำนวนทั้งหมดของ order
         receipt.totalPrice = receipt.totalPrice + order.totalPrice; //บวกราคาทั้งหมดของ order
         receipt.netPrice = receipt.totalPrice - receipt.promotion.discount;
-        receipt.startDate = order.startDate;
-        receipt.expDate = order.endDate;
 
         for (let i = 0; i < order.qty; i++) {
           const wristband = new Wristband();
           wristband.type = order.name;
-          wristband.startDate = order.startDate;
-          wristband.endDate = order.endDate;
+          wristband.startDate = receipt.startDate;
+          wristband.endDate = receipt.expDate;
           wristband.receipt = receipt;
           await this.WristbandRepository.save(wristband);
         }

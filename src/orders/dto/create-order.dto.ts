@@ -22,12 +22,6 @@ export class CreateOrderDto {
   qty: number;
 
   @IsNotEmpty()
-  startDate: Date;
-
-  @IsNotEmpty()
-  endDate: Date;
-
-  @IsNotEmpty()
   recID: number;
 
   @IsNotEmpty()

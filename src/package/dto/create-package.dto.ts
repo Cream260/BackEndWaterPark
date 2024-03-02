@@ -18,5 +18,4 @@ export class CreatePackageDto {
 
   @IsNotEmpty()
   package_detail: PackageDetail[];
-
 }

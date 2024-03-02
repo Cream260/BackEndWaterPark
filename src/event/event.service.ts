@@ -12,8 +12,6 @@ export class EventService {
   constructor(
     @InjectRepository(Event)
     private eventRepository: Repository<Event>,
-    @InjectRepository(Receipt)
-    private receiptRepository: Repository<Receipt>,
   ) {}
   async create(createEventDto: CreateEventDto) {
     // const event = new Event();

@@ -30,12 +30,6 @@ export class Order {
   @Column({ name: 'order_qty' })
   qty: number;
 
-  @Column({ name: 'order_startDate' })
-  startDate: Date;
-
-  @Column({ name: 'order_endDate' })
-  endDate: Date;
-
   @CreateDateColumn()
   createdDate: Date;
 
