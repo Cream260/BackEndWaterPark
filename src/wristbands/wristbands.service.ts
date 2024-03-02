@@ -5,18 +5,16 @@ import { UpdateWristbandDto } from './dto/update-wristband.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Wristband } from './entities/wristband.entity';
 import { Repository } from 'typeorm';
-import { Receipt } from '../receipts/entities/receipt.entity';
 import { Playground } from '../playgrounds/entities/playground.entity';
 import { WristbandDetail } from '../wristband_details/entities/wristband_detail.entity';
 @Injectable()
 export class WristbandsService {
+  qrService: any;
   constructor(
     @InjectRepository(Wristband)
     private wristbandRepository: Repository<Wristband>,
     @InjectRepository(WristbandDetail)
     private wristbandDtRepository: Repository<WristbandDetail>,
-    @InjectRepository(Receipt)
-    private receiptRepository: Repository<Receipt>,
     @InjectRepository(Playground)
     private playgroundRepository: Repository<Playground>,
   ) {}
@@ -128,14 +126,14 @@ export class WristbandsService {
 
   findAll() {
     return this.wristbandRepository.find({
-      relations: ['receipt', 'wristband_detail', 'wristband_detail.playground'],
+      relations: ['orders', 'wristband_detail', 'wristband_detail.playground'],
     });
   }
 
   async findOne(id: number) {
     const Order = await this.wristbandRepository.findOne({
       where: { id: id },
-      relations: ['receipt', 'wristband_detail', 'wristband_detail.playground'],
+      relations: ['orders', 'wristband_detail', 'wristband_detail.playground'],
     });
     if (!Order) {
       throw new NotFoundException('Wristband not found');
@@ -162,46 +160,12 @@ export class WristbandsService {
     return this.wristbandRepository.softRemove(wristband);
   }
 
-  async createWristbandsFromReceipt(receipt: Receipt): Promise<void> {
-    const { qty } = receipt;
-    const wristbands = [];
-
-    // ถ้ามี order ใน receipt
-    if (receipt.order && receipt.order.length > 0) {
-      // ลูปเพื่อสร้าง Wristband ตามจำนวนใน receipt.qty
-      for (let i = 0; i < qty; i++) {
-        const wristband = new Wristband();
-        if (receipt.event != null) {
-          wristband.type = 'Event';
-        }
-        if (receipt.package != null) {
-          wristband.type = 'Package';
-        }
-        wristband.startDate = receipt.startDate;
-        wristband.endDate = receipt.expDate;
-        wristband.receipt = receipt;
-        wristbands.push(wristband);
-      }
-    }
-    // ถ้าไม่มี order ใน receipt
-    else {
-      // สร้าง wristband ตามจำนวนใน qty และให้กำหนด type ตามเงื่อนไข
-      for (let i = 0; i < qty; i++) {
-        const wristband = new Wristband();
-        if (receipt.event != null) {
-          wristband.type = 'Event';
-        }
-        if (receipt.package != null) {
-          wristband.type = 'Package';
-        }
-        wristband.startDate = receipt.startDate;
-        wristband.endDate = receipt.expDate;
-        wristband.receipt = receipt;
-        wristbands.push(wristband);
-      }
-    }
-
-    // บันทึก Wristbands ลงในฐานข้อมูล
-    await this.wristbandRepository.save(wristbands);
-  }
+  // async generateQrCodeForWristBand(link: string): Promise<string> {
+  //   try {
+  //     return await this.qrService.generateQr(link);
+  //   } catch (error) {
+  //     console.error('Failed to generate QR code for receipt:', error);
+  //     throw new Error('Failed to generate QR code for receipt');
+  //   }
+  // }
 }

@@ -5,7 +5,6 @@ import { UpdateEventDto } from './dto/update-event.dto';
 import { Event } from './entities/event.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Receipt } from '../receipts/entities/receipt.entity';
 
 @Injectable()
 export class EventService {

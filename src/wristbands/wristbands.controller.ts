@@ -42,4 +42,10 @@ export class WristbandsController {
   remove(@Param('id') id: string) {
     return this.wristbandsService.remove(+id);
   }
+
+  // @Get(':id/qr')
+  // async generateQrCode(@Param('id') id: string): Promise<string> {
+  //   const link = `http://127.0.0.1:5173/${id}`; //รอลิ้งเชื่อม
+  //   return await this.wristbandsService.generateQrCodeForWristBand(link);
+  // }
 }

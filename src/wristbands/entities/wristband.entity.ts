@@ -8,8 +8,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Receipt } from '../../receipts/entities/receipt.entity';
 import { WristbandDetail } from '../../wristband_details/entities/wristband_detail.entity';
+import { Order } from '../../orders/entities/order.entity';
 
 @Entity()
 export class Wristband {
@@ -34,15 +34,12 @@ export class Wristband {
   @DeleteDateColumn()
   deletedDate: Date;
 
-  @ManyToOne(() => Receipt, (receipt) => receipt.wristband)
-  receipt: Receipt;
-
   @OneToMany(
     () => WristbandDetail,
     (wristband_detail) => wristband_detail.wristband,
   )
   wristband_detail: WristbandDetail[];
 
-  // @OneToMany(() => Review, (review) => review.wristband)
-  // review: Review[];
+  @ManyToOne(() => Order, (order) => order.wristband)
+  orders: Order;
 }
