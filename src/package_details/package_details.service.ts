@@ -19,19 +19,7 @@ export class PackageDetailsService {
     private ticketRepository: Repository<Ticket>,
   ) {}
   async create(createPackageDetailDto: CreatePackageDetailDto) {
-    const packages = await this.packageRepository.findOneBy({
-      id: createPackageDetailDto.packageId,
-    });
-    const ticket = await this.ticketRepository.findOneBy({
-      id: createPackageDetailDto.ticketId,
-    });
-    const package_detail: PackageDetail = new PackageDetail();
-    package_detail.qty = createPackageDetailDto.qty;
-    package_detail.name = createPackageDetailDto.name;
-    package_detail.type = createPackageDetailDto.type;
-    package_detail.package = packages;
-    package_detail.ticket = ticket;
-    return this.packageDtRepository.save(package_detail);
+    return this.packageDtRepository.save(createPackageDetailDto);
   }
 
   findAll() {

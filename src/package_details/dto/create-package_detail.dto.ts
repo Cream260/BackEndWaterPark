@@ -11,8 +11,5 @@ export class CreatePackageDetailDto {
   qty: number;
 
   @IsNotEmpty()
-  packageId: number;
-
-  @IsNotEmpty()
   ticketId: number;
 }

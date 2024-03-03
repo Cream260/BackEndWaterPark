@@ -1,8 +1,8 @@
 import { IsEmail, IsNotEmpty, IsPhoneNumber, Length } from 'class-validator';
 
-export class CreateCustomerDto {
+export class CreateEmployeeDto {
   @IsNotEmpty()
-  @Length(3, 50)
+  @Length(3, 64)
   name: string;
 
   @IsNotEmpty()
@@ -12,4 +12,13 @@ export class CreateCustomerDto {
   @IsNotEmpty()
   @IsPhoneNumber('TH')
   tel: string;
+
+  @IsNotEmpty()
+  address: string;
+
+  @IsNotEmpty()
+  position: string;
+
+  @IsNotEmpty()
+  hourly: number;
 }

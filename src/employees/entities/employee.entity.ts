@@ -4,27 +4,34 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
-  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Order } from '../../orders/entities/order.entity';
 import { User } from '../../users/entities/user.entity';
 
 @Entity()
-export class Customer {
-  @PrimaryGeneratedColumn({ name: 'cus_id' })
+export class Employee {
+  @PrimaryGeneratedColumn({ name: 'emp_id' })
   id: number;
 
-  @Column({ length: '50', name: 'cus_name' })
+  @Column({ length: '64', name: 'emp_name' })
   name: string;
 
-  @Column({ length: '100', name: 'cus_email', unique: true })
+  @Column({ name: 'emp_email', unique: true })
   email: string;
 
-  @Column({ name: 'cus_tel' })
+  @Column({ name: 'emp_tel' })
   tel: string;
+
+  @Column({ name: 'emp_address' })
+  address: string;
+
+  @Column({ name: 'emp_position' })
+  position: string;
+
+  @Column({ name: 'emp_hourly_wage' })
+  hourly: number;
 
   @CreateDateColumn()
   createdDate: Date;
@@ -35,10 +42,7 @@ export class Customer {
   @DeleteDateColumn()
   deletedDate: Date;
 
-  @OneToMany(() => Order, (order) => order.customer)
-  orders: Order[];
-
-  @OneToOne(() => User, (user) => user.customer)
+  @OneToOne(() => User, (user) => user.employee)
   @JoinColumn()
   user: User;
 }
