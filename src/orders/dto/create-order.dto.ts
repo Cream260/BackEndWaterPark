@@ -73,6 +73,5 @@ export class CreateOrderDto {
 
   packageId?: number;
 
-  @IsNotEmpty()
-  orderItems: CreatedOrderItemDto[];
+  orderItems?: CreatedOrderItemDto[];
 }

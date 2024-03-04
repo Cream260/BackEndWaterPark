@@ -31,6 +31,7 @@ export class EventService {
 
   async findOne(id: number) {
     const event = await this.eventRepository.findOneBy({ id: id });
+    console.log(event);
     if (!event) {
       throw new NotFoundException('Event not found');
     } else {

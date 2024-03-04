@@ -67,6 +67,14 @@ export class OrdersService {
         //set totalPrice
         order.event = event;
         order.totalPrice = totalPrice;
+        //startDate
+        order.startDate = createOrderDto.startDate;
+        //expDate
+        //set expDate next year
+        const expDate = new Date(createOrderDto.expDate);
+        // Then, set expDate to one year ahead
+        expDate.setFullYear(expDate.getFullYear() + 1);
+        order.expDate = new Date(expDate);
         order.netPrice = totalPrice;
         //create wristbacnd
         //save order data
@@ -89,6 +97,7 @@ export class OrdersService {
             'orderItems',
             'orderItems.ticket',
             'wristband',
+            'event',
           ],
         });
       }
@@ -125,11 +134,31 @@ export class OrdersService {
             'orderItems',
             'orderItems.ticket',
             'wristband',
+            'event',
           ],
         });
       }
       //check tiket fro orderItem
       if (createOrderDto.orderItems) {
+        //create order
+        const order = new Order();
+        order.qty = createOrderDto.qty;
+        order.received = createOrderDto.received;
+        order.customer = customer;
+        order.startDate = createOrderDto.startDate;
+        order.expDate = createOrderDto.expDate;
+
+        let totalPrice = 0;
+        for (let i = 0; i < createOrderDto.orderItems.length; i++) {
+          //find ticket
+          const ticket = await this.ticketsRepository.findOne({
+            where: { id: createOrderDto.orderItems[i].ticketId },
+          });
+          totalPrice += ticket.price * createOrderDto.orderItems[i].qty;
+        }
+        order.totalPrice = totalPrice;
+        order.netPrice = totalPrice;
+        const orderSave = await this.ordersRepository.save(order);
         for (let i = 0; i < createOrderDto.orderItems.length; i++) {
           const orderItem = new OrderItem();
           const ticket = await this.ticketsRepository.findOne({
@@ -143,12 +172,12 @@ export class OrdersService {
           orderItem.price = createOrderDto.orderItems[i].price;
           orderItem.totalPrice = createOrderDto.orderItems[i].totalPrice;
           orderItem.type = createOrderDto.orderItems[i].type;
-          orderItem.orders = order;
+          orderItem.orders = orderSave;
           await this.orderItemsRepository.save(orderItem);
           // create wristband
           for (let i = 0; i < createOrderDto.orderItems[i].qty; i++) {
             const wristband = new Wristband();
-            wristband.orders = order;
+            wristband.orders = orderSave;
             wristband.startDate = createOrderDto.startDate;
             wristband.endDate = createOrderDto.expDate;
             wristband.type = 'ticket';
@@ -156,12 +185,13 @@ export class OrdersService {
           }
         }
         return this.ordersRepository.findOne({
-          where: { id: order.id },
+          where: { id: orderSave.id },
           relations: [
             'customer',
             'orderItems',
             'orderItems.ticket',
             'wristband',
+            'event',
           ],
         });
       }
@@ -177,7 +207,13 @@ export class OrdersService {
   async findOne(id: number) {
     const order = await this.ordersRepository.findOne({
       where: { id: id },
-      relations: ['customer', 'orderItems', 'orderItems.ticket', 'wristband'],
+      relations: [
+        'customer',
+        'orderItems',
+        'orderItems.ticket',
+        'wristband',
+        'event',
+      ],
     });
     if (!order) {
       throw new NotFoundException('Order not found');
