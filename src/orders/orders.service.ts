@@ -36,109 +36,61 @@ export class OrdersService {
     private qrService: QrService,
   ) {}
   async create(createOrderDto: CreateOrderDto) {
-    const customer = await this.customersRepository.findOneBy({
-      id: createOrderDto.cusID,
-    });
-    const promotion = await this.promotionsRepository.findOneBy({
-      id: createOrderDto.promoId,
-    });
-    const event_ = await this.eventRepository.findOneBy({
-      id: createOrderDto.eventId,
-    });
-    const package_ = await this.packageRepository.findOne({
-      where: { id: createOrderDto.packageId },
-      relations: ['package_detail'],
-    });
-
-    const order: Order = new Order();
-    order.qty = 0;
-    order.totalPrice = 0;
-    order.numPeople = createOrderDto.numPeople;
-    order.nameComp = createOrderDto.nameComp;
-    order.received = createOrderDto.received;
-    order.payments = createOrderDto.payments;
-    order.startDate = createOrderDto.startDate;
-    order.expDate = createOrderDto.expDate;
-    order.customer = customer;
-    order.promotion = promotion;
-    order.event = event_;
-    order.package = package_;
-    order.discount = 0;
-
-    if (createOrderDto.promoId) {
-      order.discount = order.promotion.discount;
-    }
-
-    if (createOrderDto.eventId) {
-      order.totalPrice = event_.price * order.numPeople;
-      order.qty = order.numPeople;
-      order.netPrice = order.totalPrice;
-    }
-
-    if (createOrderDto.packageId) {
-      order.totalPrice = package_.price;
-      order.qty = package_.qty;
-      order.netPrice = package_.price;
-    }
-
-    await this.ordersRepository.save(order);
-
-    for (const od of createOrderDto.orderItems) {
-      const orderItem = new OrderItem();
-      orderItem.qty = od.qty;
-      orderItem.ticket = await this.ticketsRepository.findOneBy({
-        id: od.ticketId,
+    const order = new Order();
+    //CHECK CUSTOMER is null
+    if (createOrderDto.cusID) {
+      const customer = await this.customersRepository.findOne({
+        where: { id: createOrderDto.cusID },
       });
-      orderItem.name = orderItem.ticket.name;
-      orderItem.type = orderItem.ticket.type;
-      orderItem.price = orderItem.ticket.price;
-      orderItem.totalPrice = orderItem.price * orderItem.qty;
-      orderItem.orders = order;
-      await this.orderItemsRepository.save(orderItem);
-      order.qty = order.qty + orderItem.qty; //บวกจำนวนทั้งหมดของ order
-      order.totalPrice = order.totalPrice + orderItem.totalPrice; //บวกราคาทั้งหมดของ order
-      order.netPrice = order.totalPrice - order.discount;
-
-      for (let i = 0; i < orderItem.qty; i++) {
-        const wristband = new Wristband();
-        wristband.type = orderItem.name;
-        wristband.startDate = order.startDate;
-        wristband.endDate = order.expDate;
-        wristband.orders = order;
-        await this.wristbandRepository.save(wristband);
+      if (!customer) {
+        throw new NotFoundException('Customer not found');
       }
-    }
+      order.customer = customer;
 
-    if (createOrderDto.eventId) {
-      for (let i = 0; i < order.qty; i++) {
-        const wristband = new Wristband();
-        wristband.type = 'อีเว้นท์';
-        wristband.startDate = order.startDate;
-        wristband.endDate = order.expDate;
-        wristband.orders = order;
-        await this.wristbandRepository.save(wristband);
-      }
-    }
-    if (createOrderDto.packageId) {
-      console.log(package_.package_detail);
-      for (const pk of package_.package_detail) {
-        for (let i = 0; i < pk.qty; i++) {
+      //CHECK event is null
+      if (createOrderDto.eventId) {
+        const event = await this.eventRepository.findOne({
+          where: { id: createOrderDto.eventId },
+        });
+        if (!event) {
+          throw new NotFoundException('Event not found');
+        }
+        //calculate total price from event
+        let totalPrice = 0;
+        //coutn from qty
+        if (createOrderDto.qty) {
+          totalPrice = event.price * createOrderDto.qty;
+        }
+        //set totalPrice
+        order.event = event;
+        order.totalPrice = totalPrice;
+        order.netPrice = totalPrice;
+        //create wristbacnd
+        //save order data
+        const orderSave = await this.ordersRepository.save(order);
+        //create wristband
+        for (let i = 0; i < createOrderDto.qty; i++) {
           const wristband = new Wristband();
-          wristband.type = pk.name;
-          console.log(pk.name);
-          wristband.startDate = order.startDate;
-          wristband.endDate = order.expDate;
-          wristband.orders = order;
+          wristband.orders = orderSave;
+          wristband.startDate = createOrderDto.startDate;
+          wristband.endDate = createOrderDto.expDate;
+
+          wristband.type = 'event';
+
           await this.wristbandRepository.save(wristband);
         }
+        return this.ordersRepository.findOne({
+          where: { id: orderSave.id },
+          relations: [
+            'customer',
+            'orderItems',
+            'orderItems.ticket',
+            'wristband',
+          ],
+        });
       }
+      // check package is null
     }
-
-    await this.ordersRepository.save(order);
-    return await this.ordersRepository.findOne({
-      where: { id: order.id },
-      relations: ['orderItems', 'customer', 'orderItems.ticket'],
-    });
   }
 
   findAll() {
