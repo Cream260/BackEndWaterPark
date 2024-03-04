@@ -37,6 +37,9 @@ export class OrdersService {
   ) {}
   async create(createOrderDto: CreateOrderDto) {
     const order = new Order();
+    order.qty = createOrderDto.qty;
+    order.received = createOrderDto.received;
+
     //CHECK CUSTOMER is null
     if (createOrderDto.cusID) {
       const customer = await this.customersRepository.findOne({
@@ -90,6 +93,78 @@ export class OrdersService {
         });
       }
       // check package is null
+      if (createOrderDto.packageId) {
+        const packageData = await this.packageRepository.findOne({
+          where: { id: createOrderDto.packageId },
+        });
+        if (!packageData) {
+          throw new NotFoundException('Package not found');
+        }
+        //calculate total price from package
+
+        order.totalPrice = packageData.price;
+        order.netPrice = packageData.price;
+        //create wristbacnd
+        //save order data
+        const orderSave = await this.ordersRepository.save(order);
+        //create wristband
+        for (let i = 0; i < createOrderDto.qty; i++) {
+          const wristband = new Wristband();
+          wristband.orders = orderSave;
+          wristband.startDate = createOrderDto.startDate;
+          wristband.endDate = createOrderDto.expDate;
+
+          wristband.type = 'package';
+
+          await this.wristbandRepository.save(wristband);
+        }
+        return this.ordersRepository.findOne({
+          where: { id: orderSave.id },
+          relations: [
+            'customer',
+            'orderItems',
+            'orderItems.ticket',
+            'wristband',
+          ],
+        });
+      }
+      //check tiket fro orderItem
+      if (createOrderDto.orderItems) {
+        for (let i = 0; i < createOrderDto.orderItems.length; i++) {
+          const orderItem = new OrderItem();
+          const ticket = await this.ticketsRepository.findOne({
+            where: { id: createOrderDto.orderItems[i].ticketId },
+          });
+          if (!ticket) {
+            throw new NotFoundException('Ticket not found');
+          }
+          orderItem.ticket = ticket;
+          orderItem.qty = createOrderDto.orderItems[i].qty;
+          orderItem.price = createOrderDto.orderItems[i].price;
+          orderItem.totalPrice = createOrderDto.orderItems[i].totalPrice;
+          orderItem.type = createOrderDto.orderItems[i].type;
+          orderItem.orders = order;
+          await this.orderItemsRepository.save(orderItem);
+          // create wristband
+          for (let i = 0; i < createOrderDto.orderItems[i].qty; i++) {
+            const wristband = new Wristband();
+            wristband.orders = order;
+            wristband.startDate = createOrderDto.startDate;
+            wristband.endDate = createOrderDto.expDate;
+            wristband.type = 'ticket';
+            await this.wristbandRepository.save(wristband);
+          }
+        }
+        return this.ordersRepository.findOne({
+          where: { id: order.id },
+          relations: [
+            'customer',
+            'orderItems',
+            'orderItems.ticket',
+            'wristband',
+          ],
+        });
+      }
     }
   }
 
