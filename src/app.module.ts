@@ -24,6 +24,11 @@ import { PackageDetail } from './package_details/entities/package_detail.entity'
 import { QrService } from './qr.service';
 import { OrdersModule } from './orders/orders.module';
 import { OrderItem } from './orders/entities/order-item';
+import { UsersModule } from './users/users.module';
+import { EmployeesModule } from './employees/employees.module';
+import { Employee } from './employees/entities/employee.entity';
+import { User } from './users/entities/user.entity';
+import { AuthsModule } from './auths/auths.module';
 
 @Module({
   imports: [
@@ -37,6 +42,8 @@ import { OrderItem } from './orders/entities/order-item';
     OrdersModule,
     PlaygroundsModule,
     PackageDetailsModule,
+    UsersModule,
+    EmployeesModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -56,9 +63,12 @@ import { OrderItem } from './orders/entities/order-item';
         WristbandDetail,
         PackageDetail,
         OrderItem,
+        Employee,
+        User,
       ],
       synchronize: true,
     }),
+    AuthsModule,
   ],
   controllers: [AppController],
   providers: [AppService, QrService],
