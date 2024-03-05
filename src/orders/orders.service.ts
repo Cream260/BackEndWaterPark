@@ -42,10 +42,10 @@ export class OrdersService {
     const promotion = await this.promotionsRepository.findOneBy({
       id: createOrderDto.promoId,
     });
-    const event = await this.eventRepository.findOneBy({
+    const event_ = await this.eventRepository.findOneBy({
       id: createOrderDto.eventId,
     });
-    const packages = await this.packageRepository.findOne({
+    const package_ = await this.packageRepository.findOne({
       where: { id: createOrderDto.packageId },
       relations: ['package_detail'],
     });
@@ -61,8 +61,8 @@ export class OrdersService {
     order.expDate = createOrderDto.expDate;
     order.customer = customer;
     order.promotion = promotion;
-    order.event = event;
-    order.package = packages;
+    order.event = event_;
+    order.package = package_;
     order.discount = 0;
 
     if (createOrderDto.promoId) {
@@ -70,15 +70,15 @@ export class OrdersService {
     }
 
     if (createOrderDto.eventId) {
-      order.totalPrice = order.event.price * order.numPeople;
+      order.totalPrice = event_.price * order.numPeople;
       order.qty = order.numPeople;
       order.netPrice = order.totalPrice;
     }
 
     if (createOrderDto.packageId) {
-      order.totalPrice = order.package.price;
-      order.qty = order.package.qty;
-      order.netPrice = order.package.price;
+      order.totalPrice = package_.price;
+      order.qty = package_.qty;
+      order.netPrice = package_.price;
     }
 
     await this.ordersRepository.save(order);
@@ -120,8 +120,8 @@ export class OrdersService {
       }
     }
     if (createOrderDto.packageId) {
-      console.log(packages.package_detail);
-      for (const pk of packages.package_detail) {
+      console.log(package_.package_detail);
+      for (const pk of package_.package_detail) {
         for (let i = 0; i < pk.qty; i++) {
           const wristband = new Wristband();
           wristband.type = pk.name;
