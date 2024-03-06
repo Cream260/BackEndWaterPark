@@ -98,6 +98,7 @@ export class OrdersService {
             'orderItems.ticket',
             'wristband',
             'event',
+            'package',
           ],
         });
       }
@@ -135,6 +136,7 @@ export class OrdersService {
             'orderItems.ticket',
             'wristband',
             'event',
+            'package',
           ],
         });
       }
@@ -175,7 +177,7 @@ export class OrdersService {
           orderItem.orders = orderSave;
           await this.orderItemsRepository.save(orderItem);
           // create wristband
-          for (let i = 0; i < createOrderDto.orderItems[i].qty; i++) {
+          for (let i = 0; i < orderItem.qty; i++) {
             const wristband = new Wristband();
             wristband.orders = orderSave;
             wristband.startDate = createOrderDto.startDate;
@@ -192,6 +194,7 @@ export class OrdersService {
             'orderItems.ticket',
             'wristband',
             'event',
+            'package',
           ],
         });
       }
@@ -213,6 +216,7 @@ export class OrdersService {
         'orderItems.ticket',
         'wristband',
         'event',
+        'package',
       ],
     });
     if (!order) {
@@ -238,12 +242,12 @@ export class OrdersService {
     return this.ordersRepository.softRemove(order);
   }
 
-  async generateQrCodeForOrder(link: string): Promise<string> {
-    try {
-      return await this.qrService.generateQr(link);
-    } catch (error) {
-      console.error('Failed to generate QR code for order:', error);
-      throw new Error('Failed to generate QR code for order');
-    }
-  }
+  // async generateQrCodeForOrder(link: string): Promise<string> {
+  //   try {
+  //     return await this.qrService.generateQr(link);
+  //   } catch (error) {
+  //     console.error('Failed to generate QR code for order:', error);
+  //     throw new Error('Failed to generate QR code for order');
+  //   }
+  // }
 }
