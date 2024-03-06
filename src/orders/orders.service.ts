@@ -72,8 +72,13 @@ export class OrdersService {
         //expDate
         //set expDate next year
         const expDate = new Date(createOrderDto.expDate);
+        const startDate = new Date(createOrderDto.startDate);
+        const day = startDate.getDate();
+        const month = startDate.getMonth();
         // Then, set expDate to one year ahead
         expDate.setFullYear(expDate.getFullYear() + 1);
+        expDate.setDate(day);
+        expDate.setMonth(month);
         order.expDate = new Date(expDate);
         order.netPrice = totalPrice;
         //create wristbacnd
