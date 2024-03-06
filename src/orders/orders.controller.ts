@@ -40,9 +40,9 @@ export class OrdersController {
     return this.ordersService.remove(+id);
   }
 
-  @Get(':id/qr')
-  async generateQrCode(@Param('id') id: string): Promise<string> {
-    const link = `http://127.0.0.1:5173/CheckRequire/${id}`;
-    return await this.ordersService.generateQrCodeForOrder(link);
-  }
+  // @Get(':id/qr')
+  // async generateQrCode(@Param('id') id: string): Promise<string> {
+  //   const link = `http://127.0.0.1:5173/CheckRequire/${id}`;
+  //   return await this.ordersService.generateQrCodeForOrder(link);
+  // }
 }
