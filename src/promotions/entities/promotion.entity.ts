@@ -20,6 +20,9 @@ export class Promotion {
   @Column({ length: '50', name: 'promo_code' })
   code: string;
 
+  @Column({ name: 'promo_detail' })
+  detail: string;
+
   @Column({ name: 'promo_startDate' })
   startDate: Date;
 

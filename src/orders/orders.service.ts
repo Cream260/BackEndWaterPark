@@ -144,7 +144,6 @@ export class OrdersService {
       if (createOrderDto.orderItems) {
         //create order
         const order = new Order();
-        order.qty = createOrderDto.qty;
         order.received = createOrderDto.received;
         order.customer = customer;
         order.startDate = createOrderDto.startDate;
@@ -170,6 +169,7 @@ export class OrdersService {
             throw new NotFoundException('Ticket not found');
           }
           orderItem.ticket = ticket;
+          orderItem.name = createOrderDto.orderItems[i].name;
           orderItem.qty = createOrderDto.orderItems[i].qty;
           orderItem.price = createOrderDto.orderItems[i].price;
           orderItem.totalPrice = createOrderDto.orderItems[i].totalPrice;
@@ -177,7 +177,7 @@ export class OrdersService {
           orderItem.orders = orderSave;
           await this.orderItemsRepository.save(orderItem);
           // create wristband
-          for (let i = 0; i < createOrderDto.orderItems[i].qty; i++) {
+          for (let i = 0; i < orderItem.qty; i++) {
             const wristband = new Wristband();
             wristband.orders = orderSave;
             wristband.startDate = createOrderDto.startDate;
