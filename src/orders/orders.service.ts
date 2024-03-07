@@ -69,6 +69,8 @@ export class OrdersService {
         order.totalPrice = totalPrice;
         //startDate
         order.startDate = createOrderDto.startDate;
+        order.nameComp = createOrderDto.nameComp;
+        order.numPeople = createOrderDto.numPeople;
         //expDate
         //set expDate next year
         const expDate = new Date(createOrderDto.expDate);
