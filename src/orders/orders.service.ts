@@ -49,7 +49,6 @@ export class OrdersService {
         throw new NotFoundException('Customer not found');
       }
       order.customer = customer;
-
       //CHECK event is null
       if (createOrderDto.eventId) {
         const event = await this.eventRepository.findOne({
@@ -113,6 +112,7 @@ export class OrdersService {
       if (createOrderDto.packageId) {
         const packageData = await this.packageRepository.findOne({
           where: { id: createOrderDto.packageId },
+          relations: ['package_detail'],
         });
         if (!packageData) {
           throw new NotFoundException('Package not found');
@@ -131,7 +131,14 @@ export class OrdersService {
           wristband.startDate = createOrderDto.startDate;
           wristband.endDate = createOrderDto.expDate;
 
-          wristband.type = 'package';
+          if (
+            packageData.package_detail &&
+            packageData.package_detail.length > 0
+          ) {
+            wristband.type = packageData.package_detail[0].type; // Assuming there's only one package detail per package
+          } else {
+            wristband.type = 'บัตรผู้ใหญ่'; // Default value if no package details found
+          }
 
           await this.wristbandRepository.save(wristband);
         }
@@ -151,6 +158,7 @@ export class OrdersService {
       if (createOrderDto.orderItems) {
         //create order
         const order = new Order();
+        order.qty = 0;
         order.received = createOrderDto.received;
         order.customer = customer;
         order.startDate = createOrderDto.startDate;
@@ -165,7 +173,22 @@ export class OrdersService {
           totalPrice += ticket.price * createOrderDto.orderItems[i].qty;
         }
         order.totalPrice = totalPrice;
-        order.netPrice = totalPrice;
+        if (createOrderDto.promoId) {
+          const promotion = await this.promotionsRepository.findOne({
+            where: { id: createOrderDto.promoId },
+          });
+          if (!promotion) {
+            throw new NotFoundException('Promotion not found');
+          }
+          const netPrice = order.totalPrice - promotion.discount;
+          // กำหนดค่า netPrice ให้กับ order
+          order.netPrice = netPrice;
+          // ...ต่อไปจากนั้นสร้าง OrderItem และ Wristband ตามปกติ
+        } else {
+          // ถ้าไม่มีโปรโมชั่นก็ให้ใช้ราคาเดิม
+          order.netPrice = order.totalPrice;
+          // ...ต่อไปจากนั้นสร้าง OrderItem และ Wristband ตามปกติ
+        }
         const orderSave = await this.ordersRepository.save(order);
         for (let i = 0; i < createOrderDto.orderItems.length; i++) {
           const orderItem = new OrderItem();
@@ -183,13 +206,16 @@ export class OrdersService {
           orderItem.type = createOrderDto.orderItems[i].type;
           orderItem.orders = orderSave;
           await this.orderItemsRepository.save(orderItem);
+          order.qty = order.qty + orderItem.qty;
+
+          await this.ordersRepository.save(order);
           // create wristband
           for (let i = 0; i < orderItem.qty; i++) {
             const wristband = new Wristband();
             wristband.orders = orderSave;
             wristband.startDate = createOrderDto.startDate;
             wristband.endDate = createOrderDto.expDate;
-            wristband.type = 'ticket';
+            wristband.type = orderItem.name;
             await this.wristbandRepository.save(wristband);
           }
         }

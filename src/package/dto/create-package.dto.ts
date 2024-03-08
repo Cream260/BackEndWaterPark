@@ -1,5 +1,5 @@
 import { IsNotEmpty, MinLength, IsNumber, Min } from 'class-validator';
-import { PackageDetail } from '../../package_details/entities/package_detail.entity';
+import { CreatePackageDetailDto } from '../../package_details/dto/create-package_detail.dto';
 export class CreatePackageDto {
   @IsNotEmpty()
   @MinLength(5)
@@ -17,5 +17,5 @@ export class CreatePackageDto {
   images: string;
 
   @IsNotEmpty()
-  package_detail: PackageDetail[];
+  package_detail: CreatePackageDetailDto[];
 }

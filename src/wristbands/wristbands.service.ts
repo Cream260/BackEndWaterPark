@@ -7,9 +7,9 @@ import { Wristband } from './entities/wristband.entity';
 import { Repository } from 'typeorm';
 import { Playground } from '../playgrounds/entities/playground.entity';
 import { WristbandDetail } from '../wristband_details/entities/wristband_detail.entity';
+import { QrService } from '../qr.service';
 @Injectable()
 export class WristbandsService {
-  qrService: any;
   constructor(
     @InjectRepository(Wristband)
     private wristbandRepository: Repository<Wristband>,
@@ -17,6 +17,7 @@ export class WristbandsService {
     private wristbandDtRepository: Repository<WristbandDetail>,
     @InjectRepository(Playground)
     private playgroundRepository: Repository<Playground>,
+    private readonly qrService: QrService,
   ) {}
   async create(createWristbandDto: CreateWristbandDto) {
     // const receipt = await this.receiptRepository.findOne({
@@ -131,14 +132,19 @@ export class WristbandsService {
   }
 
   async findOne(id: number) {
-    const Order = await this.wristbandRepository.findOne({
+    const wis = await this.wristbandRepository.findOne({
       where: { id: id },
-      relations: ['orders', 'wristband_detail', 'wristband_detail.playground'],
+      relations: [
+        'orders',
+        'orders.orderItems',
+        'wristband_detail',
+        'wristband_detail.playground',
+      ],
     });
-    if (!Order) {
+    if (wis === null) {
       throw new NotFoundException('Wristband not found');
     } else {
-      return Order;
+      return wis;
     }
   }
   async update(id: number, updateWristbandDto: UpdateWristbandDto) {
@@ -160,12 +166,12 @@ export class WristbandsService {
     return this.wristbandRepository.softRemove(wristband);
   }
 
-  // async generateQrCodeForWristBand(link: string): Promise<string> {
-  //   try {
-  //     return await this.qrService.generateQr(link);
-  //   } catch (error) {
-  //     console.error('Failed to generate QR code for receipt:', error);
-  //     throw new Error('Failed to generate QR code for receipt');
-  //   }
-  // }
+  async generateQrCodeForWristBand(link: string): Promise<string> {
+    try {
+      return await this.qrService.generateQr(link);
+    } catch (error) {
+      console.error('Failed to generate QR code for wristband:', error);
+      throw new Error('Failed to generate QR code for wristband');
+    }
+  }
 }

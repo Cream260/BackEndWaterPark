@@ -23,34 +23,28 @@ export class PackageService {
     packages.qty = 0;
     packages.images = createPackageDto.images;
 
-    const packed = await this.packageRepository.save(packages);
-
-    for (const detail of createPackageDto.package_detail) {
-      const whereClause: any = { name: detail.name };
-      if (detail.type) {
-        whereClause.type = detail.type; // check type ว่านอกจาก name แล้ว type ยังตรงไหม
-      }
+    await this.packageRepository.save(packages);
+    for (let i = 0; i < createPackageDto.package_detail.length; i++) {
+      //find ticket
       const ticket = await this.TicketRepository.findOne({
-        where: whereClause,
-        relations: ['package_detail'],
+        where: { id: createPackageDto.package_detail[i].ticketId },
       });
 
       if (ticket) {
         const package_detail = new PackageDetail();
-        package_detail.name = detail.name;
-        package_detail.type = detail.type;
-        package_detail.qty = detail.qty;
+        package_detail.name = createPackageDto.package_detail[i].name;
+        package_detail.type = createPackageDto.package_detail[i].type;
+        package_detail.qty = createPackageDto.package_detail[i].qty;
         package_detail.package = packages;
         package_detail.ticket = ticket;
-        package_detail.package = packed;
         await this.packageDtRepository.save(package_detail);
-        packed.qty = packages.qty + package_detail.qty;
+        packages.qty += package_detail.qty; // เพิ่มจำนวนของ package โดยใช้จำนวนของ package_detail
       }
     }
-    await this.packageRepository.save(packed);
+    await this.packageRepository.save(packages);
     return await this.packageRepository.findOne({
-      where: { id: packed.id },
-      relations: ['package_detail'],
+      where: { id: packages.id },
+      relations: ['package_detail', 'package_detail.ticket'],
     });
   }
 
