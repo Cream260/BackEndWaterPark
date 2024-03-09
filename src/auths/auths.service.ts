@@ -39,17 +39,31 @@ export class AuthsService {
     }
   }
 
-  async register(createUserDto: CreateUserDto): Promise<User> {
+  async register(createUserDto: CreateUserDto) {
     try {
       const createUser = await this.userRepository.findOne({
         where: { username: createUserDto.username },
       });
-      if (createUser) {
-        throw new HttpException(
+      console.log(createUser);
+
+      if (createUser !== null) {
+        return new HttpException(
           'username already in use.',
           HttpStatus.BAD_REQUEST,
         );
       }
+      const createUser_ = await this.userRepository.findOne({
+        where: { email: createUserDto.email },
+      });
+      console.log(createUser_);
+
+      if (createUser_ != null) {
+        return new HttpException(
+          'email already in use.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       const passwordRegex =
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/; //มีตัวพิมพ์ใหญ่ พิมพ์เล็ก อักษรพิเศษ และมี 8-20 ตัว
       if (!passwordRegex.test(createUserDto.password)) {
@@ -58,6 +72,7 @@ export class AuthsService {
           HttpStatus.BAD_REQUEST,
         );
       }
+      console.log(createUserDto);
 
       const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
@@ -83,13 +98,12 @@ export class AuthsService {
       user_.customer = customer_;
       await this.userRepository.save(user_);
 
-      return await this.userRepository.findOne({
+      return this.userRepository.findOne({
         where: { username: user_.username },
         relations: ['customer'],
       });
     } catch (err) {
       console.error(err);
-      throw new HttpException('user not found.', HttpStatus.NOT_FOUND);
     }
   }
 
