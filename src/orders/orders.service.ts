@@ -38,7 +38,6 @@ export class OrdersService {
   async create(createOrderDto: CreateOrderDto) {
     const order = new Order();
     order.qty = createOrderDto.qty;
-    order.received = createOrderDto.received;
 
     //CHECK CUSTOMER is null
     if (createOrderDto.cusID) {
@@ -82,6 +81,7 @@ export class OrdersService {
         expDate.setMonth(month);
         order.expDate = new Date(expDate);
         order.netPrice = totalPrice;
+        order.received = order.netPrice;
         //create wristbacnd
         //save order data
         const orderSave = await this.ordersRepository.save(order);
@@ -124,7 +124,7 @@ export class OrdersService {
         order.package = packageData;
         order.startDate = createOrderDto.startDate;
         order.expDate = createOrderDto.expDate;
-        order.received = createOrderDto.received;
+        order.received = order.netPrice;
         order.payments = createOrderDto.payments;
         order.qty = packageData.qty;
         //create wristbacnd
@@ -166,36 +166,41 @@ export class OrdersService {
         //create order
         const order = new Order();
         order.qty = 0;
-        order.received = createOrderDto.received;
+        order.totalPrice = 0;
+        order.netPrice = 0;
         order.customer = customer;
         order.startDate = createOrderDto.startDate;
         order.expDate = createOrderDto.expDate;
+        order.payments = createOrderDto.payments;
+        order.discount = 0;
 
-        let totalPrice = 0;
-        for (let i = 0; i < createOrderDto.orderItems.length; i++) {
-          //find ticket
-          const ticket = await this.ticketsRepository.findOne({
-            where: { id: createOrderDto.orderItems[i].ticketId },
-          });
-          totalPrice += ticket.price * createOrderDto.orderItems[i].qty;
-        }
-        order.totalPrice = totalPrice;
         if (createOrderDto.promoId) {
           const promotion = await this.promotionsRepository.findOne({
             where: { id: createOrderDto.promoId },
           });
-          if (!promotion) {
-            throw new NotFoundException('Promotion not found');
-          }
-          const netPrice = order.totalPrice - promotion.discount;
-          // กำหนดค่า netPrice ให้กับ order
-          order.netPrice = netPrice;
-          // ...ต่อไปจากนั้นสร้าง OrderItem และ Wristband ตามปกติ
-        } else {
-          // ถ้าไม่มีโปรโมชั่นก็ให้ใช้ราคาเดิม
-          order.netPrice = order.totalPrice;
-          // ...ต่อไปจากนั้นสร้าง OrderItem และ Wristband ตามปกติ
+          order.discount = promotion.discount;
+          order.promotion = promotion;
         }
+        //   if (!promotion) {
+        //     throw new NotFoundException('Promotion not found');
+        //   }
+        //   const netPrice = order.totalPrice - promotion.discount;
+        //   order.netPrice = netPrice;
+        // } else {
+        //   order.netPrice = order.totalPrice;
+        // }
+        // order.received = order.netPrice;
+
+        // let totalPrice = 0;
+        // for (let i = 0; i < createOrderDto.orderItems.length; i++) {
+        //   //find ticket
+        //   const ticket = await this.ticketsRepository.findOne({
+        //     where: { id: createOrderDto.orderItems[i].ticketId },
+        //   });
+        //   totalPrice += ticket.price * createOrderDto.orderItems[i].qty;
+        // }
+        // order.totalPrice = totalPrice;
+
         const orderSave = await this.ordersRepository.save(order);
         for (let i = 0; i < createOrderDto.orderItems.length; i++) {
           const orderItem = new OrderItem();
@@ -206,16 +211,17 @@ export class OrdersService {
             throw new NotFoundException('Ticket not found');
           }
           orderItem.ticket = ticket;
-          orderItem.name = createOrderDto.orderItems[i].name;
+          orderItem.name = ticket.name;
           orderItem.qty = createOrderDto.orderItems[i].qty;
-          orderItem.price = createOrderDto.orderItems[i].price;
-          orderItem.totalPrice = createOrderDto.orderItems[i].totalPrice;
-          orderItem.type = createOrderDto.orderItems[i].type;
+          orderItem.price = ticket.price;
+          orderItem.totalPrice = ticket.price * orderItem.qty;
+          orderItem.type = ticket.type;
           orderItem.orders = orderSave;
           await this.orderItemsRepository.save(orderItem);
-          order.qty = order.qty + orderItem.qty;
-
-          await this.ordersRepository.save(order);
+          orderSave.qty = orderSave.qty + orderItem.qty;
+          orderSave.totalPrice = orderSave.totalPrice + orderItem.totalPrice;
+          orderSave.netPrice = orderSave.totalPrice - orderSave.discount;
+          orderSave.received = orderSave.netPrice;
           // create wristband
           for (let i = 0; i < orderItem.qty; i++) {
             const wristband = new Wristband();
@@ -226,6 +232,7 @@ export class OrdersService {
             await this.wristbandRepository.save(wristband);
           }
         }
+        await this.ordersRepository.save(orderSave);
         return this.ordersRepository.findOne({
           where: { id: orderSave.id },
           relations: [
