@@ -121,6 +121,12 @@ export class OrdersService {
 
         order.totalPrice = packageData.price;
         order.netPrice = packageData.price;
+        order.package = packageData;
+        order.startDate = createOrderDto.startDate;
+        order.expDate = createOrderDto.expDate;
+        order.received = createOrderDto.received;
+        order.payments = createOrderDto.payments;
+        order.qty = packageData.qty;
         //create wristbacnd
         //save order data
         const orderSave = await this.ordersRepository.save(order);
@@ -151,6 +157,7 @@ export class OrdersService {
             'wristband',
             'event',
             'package',
+            'package.package_detail',
           ],
         });
       }
@@ -240,6 +247,25 @@ export class OrdersService {
     });
   }
 
+  // async findOne(id: number) {
+  //   const order = await this.ordersRepository.findOne({
+  //     where: { id: id },
+  //     relations: [
+  //       'customer',
+  //       'orderItems',
+  //       'orderItems.ticket',
+  //       'wristband',
+  //       'event',
+  //       'package',
+  //     ],
+  //   });
+  //   if (!order) {
+  //     throw new NotFoundException('Order not found');
+  //   } else {
+  //     return order;
+  //   }
+  // }
+
   async findOne(id: number) {
     const order = await this.ordersRepository.findOne({
       where: { id: id },
@@ -250,12 +276,34 @@ export class OrdersService {
         'wristband',
         'event',
         'package',
+        'package.package_detail',
       ],
     });
     if (!order) {
       throw new NotFoundException('Order not found');
     } else {
-      return order;
+      // ดึงข้อมูล id ของแต่ละส่วนแล้วใส่ใน object order
+      const customerIds = order.customer ? order.customer.id : null;
+      const orderItemIds = order.orderItems
+        ? order.orderItems.map((item) => item.id)
+        : [];
+      const ticketIds = order.orderItems
+        ? order.orderItems.map((item) => (item.ticket ? item.ticket.id : null))
+        : [];
+      const wristbandIds = order.wristband ? order.wristband : null;
+      const eventId = order.event ? order.event.id : null;
+      const packageId = order.package ? order.package.id : null;
+
+      // เพิ่มข้อมูล id ของแต่ละส่วนลงใน object order
+      return {
+        ...order,
+        customerIds,
+        orderItemIds,
+        ticketIds,
+        wristbandIds,
+        eventId,
+        packageId,
+      };
     }
   }
 
@@ -275,12 +323,46 @@ export class OrdersService {
     return this.ordersRepository.softRemove(order);
   }
 
-  // async generateQrCodeForOrder(link: string): Promise<string> {
-  //   try {
-  //     return await this.qrService.generateQr(link);
-  //   } catch (error) {
-  //     console.error('Failed to generate QR code for order:', error);
-  //     throw new Error('Failed to generate QR code for order');
-  //   }
-  // }
+  async generateQrCodeForOrder(link: string): Promise<string> {
+    try {
+      return await this.qrService.generateQr(link);
+    } catch (error) {
+      console.error('Failed to generate QR code for order:', error);
+      throw new Error('Failed to generate QR code for order');
+    }
+  }
+
+  async findPackageByOrder(id: number) {
+    const order = await this.ordersRepository.findOne({
+      where: { id: id },
+      relations: ['package'],
+    });
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    } else if (!order.package) {
+      throw new NotFoundException('Order package not found');
+      // ไม่มี Package ID ใน Order จึงไม่ต้องแสดงข้อมูลของ Package คืนค่า null หรือข้อมูลที่เหมาะสมตามที่ต้องการ
+      return null; // หรือคืนค่าอื่น ๆ ที่คุณต้องการ
+    } else {
+      return order.package.id;
+    }
+  }
+
+  async findEventByOrder(id: number) {
+    const order = await this.ordersRepository.findOne({
+      where: { id: id },
+      relations: ['event'],
+    });
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    } else if (!order.event) {
+      throw new NotFoundException('Order event not found');
+      // ไม่มี Event ใน Order จึงไม่ต้องดึงข้อมูลของ Event คืนค่า null หรือข้อมูลที่เหมาะสมตามที่ต้องการ
+      return null; // หรือคืนค่าอื่น ๆ ที่คุณต้องการ
+    } else {
+      return order.event.id;
+    }
+  }
 }

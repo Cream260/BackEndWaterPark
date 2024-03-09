@@ -30,6 +30,11 @@ export class WristbandsController {
     return this.wristbandsService.findOne(+id);
   }
 
+  @Get(':id')
+  findOrderByWristband(@Param('id') id: string) {
+    return this.wristbandsService.findOne(+id);
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -43,9 +48,9 @@ export class WristbandsController {
     return this.wristbandsService.remove(+id);
   }
 
-  @Get(':id/qr')
-  async generateQrCode(@Param('id') id: string): Promise<string> {
-    const link = `http://127.0.0.1:5173/CheckRequire/${id}`;
-    return await this.wristbandsService.generateQrCodeForWristBand(link);
-  }
+  // @Get(':id/qr')
+  // async generateQrCode(@Param('id') id: string): Promise<string> {
+  //   const link = `http://127.0.0.1:5173/CheckRequire/${id}`;
+  //   return await this.wristbandsService.generateQrCodeForWristBand(link);
+  // }
 }

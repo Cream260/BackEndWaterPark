@@ -166,12 +166,12 @@ export class WristbandsService {
     return this.wristbandRepository.softRemove(wristband);
   }
 
-  async generateQrCodeForWristBand(link: string): Promise<string> {
-    try {
-      return await this.qrService.generateQr(link);
-    } catch (error) {
-      console.error('Failed to generate QR code for wristband:', error);
-      throw new Error('Failed to generate QR code for wristband');
-    }
-  }
+  // async generateQrCodeForWristBand(link: string): Promise<string> {
+  //   try {
+  //     return await this.qrService.generateQr(link);
+  //   } catch (error) {
+  //     console.error('Failed to generate QR code for wristband:', error);
+  //     throw new Error('Failed to generate QR code for wristband');
+  //   }
+  // }
 }
