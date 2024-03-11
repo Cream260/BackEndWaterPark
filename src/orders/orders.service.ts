@@ -245,6 +245,17 @@ export class OrdersService {
           ],
         });
       }
+      //if promotionid not null
+      if (createOrderDto.promoId) {
+        const promotion = await this.promotionsRepository.findOne({
+          where: { id: createOrderDto.promoId },
+        });
+        order.discount = promotion.discount;
+        order.promotion = promotion;
+        order.netPrice = order.totalPrice - promotion.discount;
+      } else {
+        order.netPrice = order.totalPrice;
+      }
     }
   }
 
