@@ -55,4 +55,9 @@ export class OrdersController {
   findPackageByOrder(@Param('id') id: string) {
     return this.ordersService.findPackageByOrder(+id);
   }
+
+  @Get(':id/promotion')
+  findPromotionByOrder(@Param('id') id: string) {
+    return this.ordersService.findPromotionByOrder(+id);
+  }
 }
