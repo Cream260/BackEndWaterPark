@@ -180,6 +180,7 @@ export class OrdersService {
           });
           order.discount = promotion.discount;
           order.promotion = promotion;
+          //
         }
         //   if (!promotion) {
         //     throw new NotFoundException('Promotion not found');
