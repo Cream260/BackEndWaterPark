@@ -161,6 +161,26 @@ export class OrdersService {
           ],
         });
       }
+      //promootion
+      if (createOrderDto.promoId) {
+        console.log('promoId', createOrderDto.promoId);
+        console.log('createOrderDto', createOrderDto);
+        const promotion = await this.promotionsRepository.findOne({
+          where: { id: createOrderDto.promoId },
+        });
+        //find order
+        if (!promotion) {
+          throw new NotFoundException('Promotion not found');
+        }
+        const netPrice = order.totalPrice - promotion.discount;
+        order.netPrice = netPrice;
+        //set endate and startdate
+        order.startDate = createOrderDto.startDate;
+        order.expDate = createOrderDto.expDate;
+        console.log('order', order);
+      } else {
+        order.netPrice = order.totalPrice;
+      }
       //check tiket fro orderItem
       if (createOrderDto.orderItems) {
         //create order
@@ -180,6 +200,9 @@ export class OrdersService {
           });
           order.discount = promotion.discount;
           order.promotion = promotion;
+          //set endate and startdate
+          order.startDate = createOrderDto.startDate;
+          order.expDate = createOrderDto.expDate;
           //
         }
         //   if (!promotion) {
@@ -334,6 +357,17 @@ export class OrdersService {
     if (!order) {
       throw new NotFoundException('Order not found');
     }
+    //update date
+    if (updateOrderDto.startDate) {
+      order.startDate = updateOrderDto.startDate;
+    }
+    if (updateOrderDto.expDate) {
+      order.expDate = updateOrderDto.expDate;
+    }
+    if (updateOrderDto.payments) {
+      order.payments = updateOrderDto.payments;
+    }
+
     return await this.ordersRepository.save({
       ...order,
       ...updateOrderDto,
