@@ -353,6 +353,7 @@ export class OrdersService {
   }
 
   async update(id: number, updateOrderDto: UpdateOrderDto) {
+    console.log('update order', updateOrderDto);
     const order = await this.ordersRepository.findOneBy({ id: id });
     if (!order) {
       throw new NotFoundException('Order not found');
@@ -368,10 +369,7 @@ export class OrdersService {
       order.payments = updateOrderDto.payments;
     }
 
-    return await this.ordersRepository.save({
-      ...order,
-      ...updateOrderDto,
-    });
+    return this.ordersRepository.save(order);
   }
 
   async remove(id: number) {
