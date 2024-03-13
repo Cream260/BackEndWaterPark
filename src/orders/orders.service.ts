@@ -161,26 +161,6 @@ export class OrdersService {
           ],
         });
       }
-      //promootion
-      if (createOrderDto.promoId) {
-        console.log('promoId', createOrderDto.promoId);
-        console.log('createOrderDto', createOrderDto);
-        const promotion = await this.promotionsRepository.findOne({
-          where: { id: createOrderDto.promoId },
-        });
-        //find order
-        if (!promotion) {
-          throw new NotFoundException('Promotion not found');
-        }
-        const netPrice = order.totalPrice - promotion.discount;
-        order.netPrice = netPrice;
-        //set endate and startdate
-        order.startDate = createOrderDto.startDate;
-        order.expDate = createOrderDto.expDate;
-        console.log('order', order);
-      } else {
-        order.netPrice = order.totalPrice;
-      }
       //check tiket fro orderItem
       if (createOrderDto.orderItems) {
         //create order
@@ -200,10 +180,6 @@ export class OrdersService {
           });
           order.discount = promotion.discount;
           order.promotion = promotion;
-          //set endate and startdate
-          order.startDate = createOrderDto.startDate;
-          order.expDate = createOrderDto.expDate;
-          //
         }
         //   if (!promotion) {
         //     throw new NotFoundException('Promotion not found');
@@ -269,17 +245,6 @@ export class OrdersService {
           ],
         });
       }
-      //if promotionid not null
-      if (createOrderDto.promoId) {
-        const promotion = await this.promotionsRepository.findOne({
-          where: { id: createOrderDto.promoId },
-        });
-        order.discount = promotion.discount;
-        order.promotion = promotion;
-        order.netPrice = order.totalPrice - promotion.discount;
-      } else {
-        order.netPrice = order.totalPrice;
-      }
     }
   }
 
@@ -319,7 +284,6 @@ export class OrdersService {
         'event',
         'package',
         'package.package_detail',
-        'promotion', // เพิ่ม relation ของ promotion
       ],
     });
     if (!order) {
@@ -336,7 +300,6 @@ export class OrdersService {
       const wristbandIds = order.wristband ? order.wristband : null;
       const eventId = order.event ? order.event.id : null;
       const packageId = order.package ? order.package.id : null;
-      const promotionId = order.promotion ? order.promotion.id : null; // เพิ่มการดึงข้อมูล id ของ promotion
 
       // เพิ่มข้อมูล id ของแต่ละส่วนลงใน object order
       return {
@@ -347,29 +310,19 @@ export class OrdersService {
         wristbandIds,
         eventId,
         packageId,
-        promotionId, // เพิ่ม promotionId ลงใน object order
       };
     }
   }
 
   async update(id: number, updateOrderDto: UpdateOrderDto) {
-    console.log('update order', updateOrderDto);
     const order = await this.ordersRepository.findOneBy({ id: id });
     if (!order) {
       throw new NotFoundException('Order not found');
     }
-    //update date
-    if (updateOrderDto.startDate) {
-      order.startDate = updateOrderDto.startDate;
-    }
-    if (updateOrderDto.expDate) {
-      order.expDate = updateOrderDto.expDate;
-    }
-    if (updateOrderDto.payments) {
-      order.payments = updateOrderDto.payments;
-    }
-
-    return this.ordersRepository.save(order);
+    return await this.ordersRepository.save({
+      ...order,
+      ...updateOrderDto,
+    });
   }
 
   async remove(id: number) {
@@ -385,7 +338,22 @@ export class OrdersService {
       throw new Error('Failed to generate QR code for order');
     }
   }
+  async findPromotionByOrder(id: number) {
+    const order = await this.ordersRepository.findOne({
+      where: { id: id },
+      relations: ['promotion'],
+    });
 
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    } else if (!order.promotion) {
+      throw new NotFoundException('Order promotion not found');
+      // ไม่มี Event ใน Order จึงไม่ต้องดึงข้อมูลของ Event คืนค่า null หรือข้อมูลที่เหมาะสมตามที่ต้องการ
+      return null; // หรือคืนค่าอื่น ๆ ที่คุณต้องการ
+    } else {
+      return order.promotion.id;
+    }
+  }
   async findPackageByOrder(id: number) {
     const order = await this.ordersRepository.findOne({
       where: { id: id },
@@ -417,23 +385,6 @@ export class OrdersService {
       return null; // หรือคืนค่าอื่น ๆ ที่คุณต้องการ
     } else {
       return order.event.id;
-    }
-  }
-
-  async findPromotionByOrder(id: number) {
-    const order = await this.ordersRepository.findOne({
-      where: { id: id },
-      relations: ['promotion'],
-    });
-
-    if (!order) {
-      throw new NotFoundException('Order not found');
-    } else if (!order.promotion) {
-      throw new NotFoundException('Order promotion not found');
-      // ไม่มี Event ใน Order จึงไม่ต้องดึงข้อมูลของ Event คืนค่า null หรือข้อมูลที่เหมาะสมตามที่ต้องการ
-      return null; // หรือคืนค่าอื่น ๆ ที่คุณต้องการ
-    } else {
-      return order.promotion.id;
     }
   }
 }
